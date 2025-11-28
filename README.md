@@ -14,5 +14,7 @@ frontend-interview-notes/
 
 ## 📖 内容导航
 ### DOM
-- [DOM操作与优化](./docs/DOM/DOM 操作与优化.md)
+- [DOM操作与优化](./docs/DOM/dom-operation-optimization.md)
+
 ### JavaScript
+
