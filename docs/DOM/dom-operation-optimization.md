@@ -143,3 +143,96 @@ observer.observe(img)
 > 他们均只能存储字符串类型的对象
 >
 > 不同浏览器无法共享localStorage或sessionStorage中的信息。相同浏览器的不同页面间可以共享相同的 localStorage（页面属于相同域名和端口），但是不同页面或标签页间无法共享sessionStorage的信息。
+
+
+
+### 5.如何封装一个支持过期时间的 localStorage
+
+**核心知识点**
+
+通过封装原生 `localStorage` 方法，实现对存储数据**设置时间戳**和在**读取时进行校验**的核心逻辑。
+
+- **数据结构设计：** 存储的值不应该是原始值，而是一个包含原始数据和过期时间戳（`expires`）的**对象**。
+  - `value`: 实际需要存储的数据。
+  - `expires`: 数据的过期时间点，通常是当前时间加上有效期（毫秒数）。
+- **存储（`setItem` 封装）：** 存储时，将原始值和计算出的过期时间一起封装成一个对象，然后用 `JSON.stringify()` 存入 `localStorage`。
+- **读取（`getItem` 封装）：**
+  1. 从 `localStorage` 取出存储的字符串，并用 `JSON.parse()` 解析回对象。
+  2. **核心判断：** 检查当前时间是否大于存储的过期时间戳 (`expires`)。
+  3. 如果**已过期**，调用 `removeItem` 清除该项，并返回 `null`。
+  4. 如果**未过期**，返回对象中的实际数据 (`value`)。
+
+```javascript
+(function () {
+
+    localStorage.setItem = function (key, value, time = Infinity) {
+        
+        // 检查传入的 time 是否是有限数字（即是否设置了明确的过期时间）。
+        const payload = Number.isFinite(time)
+            ? {
+                  // 如果设置了过期时间，将数据和过期时间封装成一个对象。
+                  __data: value, // 存储实际数据
+                  // 计算数据在未来的过期时间点（当前时间 + 有效期毫秒数）
+                  __expiresTime: Date.now() + time, 
+              }
+            : value; // 如果 time 是 Infinity，则 payload 就是原始值，不添加过期标记。
+
+        // 调用原生 Storage.prototype.setItem 方法来执行实际的存储操作。
+        // 使用 .call(localStorage, ...) 确保方法在 localStorage 实例的上下文上执行。
+        // 注意：无论是封装的对象还是原始值，都必须先用 JSON.stringify() 转换为字符串才能存储。
+        Storage.prototype.setItem.call(localStorage, key, JSON.stringify(payload));
+    };
+
+    /**
+     * 重写 localStorage.getItem 方法，使其在读取时能进行过期校验。
+     * @param {string} key 键名
+     * @returns {string | undefined} 未过期则返回 JSON 字符串形式的实际数据，否则返回 undefined。
+     */
+    localStorage.getItem = function (key) {
+        
+        // 调用原生 Storage.prototype.getItem 方法获取存储的字符串。
+        const value = Storage.prototype.getItem.call(localStorage, key);
+        
+        // 如果未取到值（null），直接返回，不做后续处理。
+        if (value === null) {
+            return null;
+        }
+
+        try {
+            // 尝试解析取出的字符串，看它是否是我们封装的 JSON 对象。
+            const jsonVal = JSON.parse(value);
+            
+            // 检查解析后的对象中是否存在 __expiresTime 属性。
+            if (jsonVal && jsonVal.__expiresTime) {
+                // 如果存在过期时间标记，则进行过期校验：
+                
+                // 校验：过期时间点 >= 当前时间，即数据未过期。
+                return jsonVal.__expiresTime >= Date.now()
+                    // 未过期：返回实际存储的数据 __data (JSON.stringify 是因为原来的 value 是 stringified)
+                    ? JSON.stringify(jsonVal.__data)
+                    // 已过期：返回 undefined (void 0 是一个返回 undefined 的简洁写法)
+                    : void 0;
+            }
+            
+            // 如果解析成功，但没有 __expiresTime 标记，说明它是一个永不过期的原始存储项，直接返回。
+            return value; 
+
+        } catch (error) {
+            // 如果 JSON.parse 失败，说明存储的是一个原始字符串（非 JSON），
+            // 或者是一个无效的 JSON 格式，直接返回原始值。
+            return value;
+        }
+    };
+})();
+```
+
+ **推荐回答结构**：
+
+> 要设置支持过期时间的 `localStorage`，由于原生 `localStorage` 没有这个功能，我们需要通过**封装**它的 `setItem` 和 `getItem` 方法来实现。
+>
+> 核心思路是：
+>
+> 1. **存储（`setItem`）：** 不只存储数据，而是将数据和一个计算好的**过期时间戳**（过期时间戳是计算得到的，通常是 `当前时间` + `有效期（毫秒数）`。）封装成一个对象，然后用 `JSON.stringify()` 存进去。
+> 2. **读取（`getItem`）：** 取出数据时，先检查当前时间 (`Date.now()`) 是否大于存储的那个过期时间戳。
+> 3. 如果**已过期**，就调用 `removeItem` 清除该数据，并返回 `null`。
+> 4. 如果**未过期**，就返回实际存储的数据。
