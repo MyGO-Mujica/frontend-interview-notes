@@ -236,3 +236,39 @@ observer.observe(img)
 > 2. **读取（`getItem`）：** 取出数据时，先检查当前时间 (`Date.now()`) 是否大于存储的那个过期时间戳。
 > 3. 如果**已过期**，就调用 `removeItem` 清除该数据，并返回 `null`。
 > 4. 如果**未过期**，就返回实际存储的数据。
+
+
+
+### 6.浏览器中 cookie 有哪些字段
+
+
+
+在浏览器中，一个 Cookie 主要由以下字段组成：
+
+1. **name / value**
+    Cookie 的键和值，是最基本的字段。
+2. **expires**
+    指定 Cookie 的过期时间（绝对时间）。到了时间后浏览器会自动删除。
+3. **max-age**
+    指定 Cookie 的存活时长（相对时间，单位秒）。`max-age` 和 `expires` 二选一，`max-age` 优先级更高。
+4. **domain**
+    指定 Cookie 允许发送的域名范围。
+    例如：`domain=.example.com` 可在所有子域共享 Cookie。
+5. **path**
+    指定 Cookie 生效的路径。
+    如 `path=/admin` 则只有访问 `/admin` 下的接口才会带上 Cookie。
+6. **secure**
+    表示 Cookie 仅在 HTTPS 连接中传输。
+7. **httpOnly**
+    表示 Cookie 无法通过 JavaScript 的 `document.cookie` 访问，提高安全性。
+8. **sameSite**
+    用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
+   - `Strict`：完全禁止跨站发送
+   - `Lax`：部分跨站允许（如 Get 导航）
+   - `None`：允许跨站，但必须搭配 `Secure`
+
+
+
+**一句话可用**
+
+**Cookie 的字段包括：name、value、expires、max-age、domain、path、secure、httpOnly、sameSite。其中 secure、httpOnly、sameSite 是安全相关字段。**
