@@ -267,9 +267,7 @@ observer.observe(img)
 
 8. sameSite
 
-    
-
-   用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
+    用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
 
    - `Strict`：完全禁止跨站发送
    - `Lax`：部分跨站允许（如 Get 导航）
@@ -284,3 +282,44 @@ observer.observe(img)
 #### 2. 当 cookie 没有设置 maxage 时，cookie 会存在多久
 
 > 如果 Cookie 没有设置 `expires` 或 `max-age`，它会变成会话 Cookie，只在当前浏览器**会话中有效**，关闭浏览器后就会被清除。
+
+
+
+#### 3. SameSite Cookie 有哪些值，是如何预防 CSRF 攻击的
+
+**核心知识**
+
+**SameSite 属性用于限制第三方环境下 Cookie 的发送，主要有三个值：**
+
+**1 `SameSite=Strict`**
+
+- 最严格。
+- **任何跨站请求都不会携带 Cookie**（包括点击外链）。
+- 适用于高安全性场景，如银行、支付，几乎杜绝 CSRF。
+
+**2 `SameSite=Lax`（浏览器默认值）**
+
+- 大部分跨站请求不发送 Cookie。
+- **允许“安全的 GET 跨站请求”携带 Cookie**，例如：
+  - 点击链接跳转、打开新页面
+- 不能用于跨站 POST、iframe、fetch。
+
+**3 `SameSite=None; Secure`**
+
+- **必须配合 `Secure` 一起使用**（否则被浏览器拒绝）。
+- 允许 Cookie 在所有第三方场景中携带。
+- 用于跨域登录、第三方 SDK、CDN 资源等。
+
+
+
+**推荐回答**：
+
+> **SameSite Cookie 主要有三个值：**
+>
+> 1. **Strict**：最严格，所有跨站请求都不会携带 Cookie，可以实现最强的 CSRF 防护。
+> 2. **Lax**：浏览器默认值，只有导航到第三方网站的 Get 链接会发送 Cookie，跨域的图片、iframe、form表单都不会发送 Cookie，可以阻止大多数 CSRF 攻击。
+> 3. **None**：必须与 Secure 配合使用，即在 https 下发送。任何情况下都会向第三方网站请求发送 Cookie，常用于跨域登录或第三方应用。
+>
+> **SameSite 能预防 CSRF 的原因是：**
+>  CSRF 依赖浏览器在跨站请求中“自动带上 Cookie”。
+>  而 SameSite 会限制 Cookie 在跨站环境下发送，从源头阻断了攻击者利用用户 Cookie 进行恶意请求的可能性。
