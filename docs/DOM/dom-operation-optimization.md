@@ -122,11 +122,11 @@ const observer = new IntersectionObserver((changes) => {
 observer.observe(img)
 ```
 
-​      1. 先把图片真实地址存在`data-src`属性上。
+​      1. 先把图片真实地址存在`data-src`属性上。`<img data-src="真实图片地址">`
 
 ​      2. 我们用`IntersectionObserver`去‘观察’这个图片。
 
-​      3. 当API监听到图片进入视口时，我们再把`data-src`的值赋给`src`属性，图片就加载了。
+​      3. 当API监听到图片进入视口时，我们再把`data-src`的值赋给`src`属性，图片就加载了。`img.src = img.dataset.src`
 
 ​	  4. 它比以前监听`scroll`事件性能好得多，不会引发卡顿。
 
@@ -267,7 +267,7 @@ observer.observe(img)
 
 8. sameSite
 
-    用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
+   用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
 
    - `Strict`：完全禁止跨站发送
    - `Lax`：部分跨站允许（如 Get 导航）
@@ -323,3 +323,50 @@ observer.observe(img)
 > **SameSite 能预防 CSRF 的原因是：**
 >  CSRF 依赖浏览器在跨站请求中“自动带上 Cookie”。
 >  而 SameSite 会限制 Cookie 在跨站环境下发送，从源头阻断了攻击者利用用户 Cookie 进行恶意请求的可能性。
+
+
+
+#### 4. Cookie 增删改查
+
+**题目：如何设置一个Cookie？**
+
+核心知识
+
+**1. 通过 `document.cookie` 设置（浏览器端最常见）**
+ `document.cookie = "key=value; expires=...; max-age=...; path=/; domain=...; secure; samesite=..."`
+
+**2.也可以使用新的API**
+
+```javascript
+await cookieStore.set({
+  name: "token",
+  value: "abc123",
+  expires: Date.now() + 3600 * 1000,
+  path: "/",
+  sameSite: "Lax",
+  secure: true
+});
+```
+
+**推荐回答：**
+
+> 在浏览器端设置 Cookie 主要有两种方式：传统方式是使用 `document.cookie` 写一段 `key=value` 的字符串，同时带上 `expires`、`max-age`、`path`、`secure`、`SameSite` 等属性。
+>
+> 在现代浏览器中，也可以使用 **Cookie Store API** 的 `cookieStore.set()`，它是异步的，参数是对象形式，更安全。
+
+
+
+**题目： 如何删除一个Cookie？**
+
+核心知识
+
+前端 **无法真正删除 Cookie**，只能通过：
+ **设置相同 key、相同 path、相同 domain，并把过期时间设为过去时间，从而让浏览器自动清除。**
+
+**推荐回答：**
+
+> 删除 Cookie 的本质是让浏览器把它过期掉：要么用 `max-age=-1，要么用 ` expires ` 设置为过去时间。如果用 Cookie Store API，则可以直接使用 `cookieStore.delete(name)`，但 path、domain 必须与原来一致。
+
+
+
+> **顺便补充一下，Cookie Store API 比传统的 `document.cookie` 更现代、可读性更好，也支持异步操作，但目前 Safari 还没有完全支持，所以项目中一般是两者结合使用。**
