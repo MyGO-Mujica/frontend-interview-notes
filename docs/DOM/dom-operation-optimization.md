@@ -370,3 +370,41 @@ await cookieStore.set({
 
 
 > **顺便补充一下，Cookie Store API 比传统的 `document.cookie` 更现代、可读性更好，也支持异步操作，但目前 Safari 还没有完全支持，所以项目中一般是两者结合使用。**
+
+
+
+### 7.  addEventListener()
+
+- 题目 ：浏览器中监听事件函数 addEventListener 第三个参数有那些值
+
+**核心知识**
+
+addEventListener() 用来给 DOM 绑定事件，它不会覆盖之前绑定的事件，并且事件会在捕获阶段或冒泡阶段触发。第三个参数决定事件触发阶段、是否只触发一次、是否阻止 passive 行为等。
+
+```javascript
+addEventListener(type, listener);
+addEventListener(type, listener, options);
+addEventListener(type, listener, useCapture);
+```
+
+`tpye`:表示监听事件类型的大小写敏感的字符串。
+
+`	listener`:当所监听的事件类型触发时，会接收到一个事件通知（实现了Event接口的对象）对象。
+
+ **推荐回答**
+
+> addEventListener 的第三个参数可以是布尔值或一个配置对象。
+>
+> **当是布尔值时：**
+>
+> - `true` 表示在捕获阶段触发
+> - `false`（默认）表示在冒泡阶段触发
+>
+> **当是 options 对象时，可以包含：**
+>
+> - `capture`: 是否在捕获阶段触发
+> - `once`: 事件只触发一次，触发后自动移除监听
+> - `passive`: 告诉浏览器监听器不会调用 `preventDefault()`，提升滚动性能
+> - `signal`: 调用`AbortSignal` 的 `abort()` 方法移除监听器
+>
+> 实际开发中常用的是 `{ passive: true }` 和 `{ once: true }`。
