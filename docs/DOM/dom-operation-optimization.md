@@ -375,8 +375,6 @@ await cookieStore.set({
 
 ### 7.  addEventListener()
 
-- 题目 ：浏览器中监听事件函数 addEventListener 第三个参数有那些值
-
 **核心知识**
 
 addEventListener() 用来给 DOM 绑定事件，它不会覆盖之前绑定的事件，并且事件会在捕获阶段或冒泡阶段触发。第三个参数决定事件触发阶段、是否只触发一次、是否阻止 passive 行为等。
@@ -408,3 +406,56 @@ addEventListener(type, listener, useCapture);
 > - `signal`: 调用`AbortSignal` 的 `abort()` 方法移除监听器
 >
 > 实际开发中常用的是 `{ passive: true }` 和 `{ once: true }`。
+
+ 
+
+### 8. 什么是事件冒泡和事件捕获
+
+**核心知识点**
+
+****
+
+1. 一、核心知识点（面试必会）
+
+   ##### **1. 事件流（Event Flow）**
+
+   浏览器事件从触发开始到结束，会经历 **捕获阶段 → 目标阶段 → 冒泡阶段**。
+
+   ------
+
+   ##### **2. 事件捕获（Event Capturing）**
+
+   - 由 **最外层（window/document）向目标元素逐层传递**。
+   - 先父再子，本质是 **自上而下**。
+   - addEventListener 的第三个参数设为 `true` 或 `{ capture: true }` 进入捕获阶段。
+
+   ------
+
+   ##### **3. 事件冒泡（Event Bubbling）**
+
+   - 从 **目标元素向外不断向上冒泡到 document**。
+   - 本质是 **自下而上**。
+   - addEventListener 默认就是冒泡。
+
+   ------
+
+   ##### **4. 如何阻止事件传播**
+
+   - `event.stopPropagation()`：停止冒泡/捕获继续传播。
+   - `event.stopImmediatePropagation()`：同上 + 阻止同一元素上的其他监听器。
+
+   ------
+
+   ##### **5. 如何阻止默认行为**
+
+   - `event.preventDefault()`：阻止浏览器默认行为（如 a 标签跳转、表单提交）。
+
+**推荐回答：**
+
+>在浏览器中，事件会按照固定的事件流触发，它分为三个阶段：
+>
+>1. **事件捕获阶段（capturing）**：事件从最外层的 window、document 开始，一层一层向下传递到目标元素，这叫“捕获”。如果在 addEventListener 的第三个参数设置为 `true`，事件会在捕获阶段触发。
+>2. **目标阶段（target）**：事件到达实际触发的目标元素本身。
+>3. **事件冒泡阶段（bubbling）**：从目标元素开始，事件又会向外一层一层冒泡到 document，这叫“冒泡”。addEventListener 默认就是在冒泡阶段执行。
+>
+>如果需要中断事件传播，可以使用 `event.stopPropagation()`；如果要阻止默认行为，如阻止表单提交，用 `event.preventDefault()`。
