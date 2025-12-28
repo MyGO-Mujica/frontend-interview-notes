@@ -415,7 +415,7 @@ addEventListener(type, listener, useCapture);
 
 ****
 
-1. 一、核心知识点（面试必会）
+1. ✅ 一、核心知识点（面试必会）
 
    ##### **1. 事件流（Event Flow）**
 
@@ -459,3 +459,147 @@ addEventListener(type, listener, useCapture);
 >3. **事件冒泡阶段（bubbling）**：从目标元素开始，事件又会向外一层一层冒泡到 document，这叫“冒泡”。addEventListener 默认就是在冒泡阶段执行。
 >
 >如果需要中断事件传播，可以使用 `event.stopPropagation()`；如果要阻止默认行为，如阻止表单提交，用 `event.preventDefault()`。
+
+
+
+#### 关于事件捕获和冒泡，以下代码输出多少？
+
+
+
+```html
+<div class="container" id="container">
+  <div class="item" id="item">
+    <div class="btn" id="btn">Click me</div>
+  </div>
+</div>
+```
+
+```javascript
+document.addEventListener(
+  "click",
+  (e) => {
+    console.log("Document click");
+  },
+  {
+    capture: true,
+  },
+);
+ 
+container.addEventListener(
+  "click",
+  (e) => {
+    console.log("Container click");
+    // e.stopPropagation()
+  },
+  {
+    capture: true,
+  },
+);
+ 
+item.addEventListener("click", () => {
+  console.log("Item click");
+});
+ 
+btn.addEventListener("click", () => {
+  console.log("Btn click");
+});
+ 
+btn.addEventListener(
+  "click",
+  () => {
+    console.log("Btn click When Capture");
+  },
+  {
+    capture: true,
+  },
+);
+```
+
+
+
+>Document click
+>
+>Container click
+>
+>Btn click When Capture
+>
+>Btn click
+>
+>Item click
+
+
+
+```html
+<div id="s1">
+  s1
+  <div id="s2">s2</div>
+</div>
+```
+
+```javascript
+let s1 = document.getElementById("s1");
+let s2 = document.getElementById("s2");
+ 
+s2.onclick = function () {
+  console.log("s2 click1");
+};
+s1.addEventListener(
+  "click",
+  function (e) {
+    console.log("s1 冒泡事件");
+  },
+  false,
+);
+s2.addEventListener(
+  "click",
+  function (e) {
+    console.log("s2 冒泡事件2");
+  },
+  false,
+);
+s2.addEventListener(
+  "click",
+  function (e) {
+    console.log("s2 冒泡事件1");
+  },
+  false,
+);
+s1.addEventListener(
+  "click",
+  function (e) {
+    console.log("s1 捕获事件");
+  },
+  true,
+);
+s2.addEventListener(
+  "click",
+  function (e) {
+    console.log("s2 捕获事件");
+  },
+  true,
+);
+s2.onclick = function () {
+  console.log("s2 click2");
+};
+```
+
+
+
+>s1 捕获事件
+>
+>s2 捕获事件
+>
+>s2 click2
+>
+>s2 冒泡事件2
+>
+>s2 冒泡事件1
+>
+>s1 冒泡事件
+
+
+
+**总结**
+
+>   浏览器事件传播遵循捕获、目标和冒泡三个阶段。通过 addEventListener 的第三个参数可以控制监听发生在捕获还是冒泡阶段。需要注意的是，**onclick 属于 DOM0 事件**，在目标阶段会**优先**于通过 addEventListener 注册的冒泡监听执行。事件传播过程中可以通过 stopPropagation 阻止事件继续传播。
+
