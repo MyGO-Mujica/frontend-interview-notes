@@ -462,7 +462,7 @@ addEventListener(type, listener, useCapture);
 
 
 
-#### 关于事件捕获和冒泡，以下代码输出多少？
+#### 1.关于事件捕获和冒泡，以下代码输出多少？
 
 
 
@@ -473,6 +473,8 @@ addEventListener(type, listener, useCapture);
   </div>
 </div>
 ```
+
+
 
 ```javascript
 document.addEventListener(
@@ -517,17 +519,15 @@ btn.addEventListener(
 
 
 
->Document click
+> Document click
 >
->Container click
+> Container click
 >
->Btn click When Capture
+> Btn click When Capture
 >
->Btn click
+> Btn click
 >
->Item click
-
-
+> Item click
 
 ```html
 <div id="s1">
@@ -535,6 +535,8 @@ btn.addEventListener(
   <div id="s2">s2</div>
 </div>
 ```
+
+
 
 ```javascript
 let s1 = document.getElementById("s1");
@@ -585,21 +587,45 @@ s2.onclick = function () {
 
 
 
->s1 捕获事件
+> s1 捕获事件
 >
->s2 捕获事件
+> s2 捕获事件
 >
->s2 click2
+> s2 click2
 >
->s2 冒泡事件2
+> s2 冒泡事件2
 >
->s2 冒泡事件1
+> s2 冒泡事件1
 >
->s1 冒泡事件
-
-
+> s1 冒泡事件
 
 **总结**
 
->   浏览器事件传播遵循捕获、目标和冒泡三个阶段。通过 addEventListener 的第三个参数可以控制监听发生在捕获还是冒泡阶段。需要注意的是，**onclick 属于 DOM0 事件**，在目标阶段会**优先**于通过 addEventListener 注册的冒泡监听执行。事件传播过程中可以通过 stopPropagation 阻止事件继续传播。
+> 浏览器事件传播遵循捕获、目标和冒泡三个阶段。通过 addEventListener 的第三个参数可以控制监听发生在捕获还是冒泡阶段。需要注意的是，**onclick 属于 DOM0 事件**，在目标阶段会**优先**于通过 addEventListener 注册的冒泡监听执行。事件传播过程中可以通过 stopPropagation 阻止事件继续传播。
 
+
+
+#### 2.DOM 中如何阻止事件默认行为，如何判断事件否可阻止？
+
+**如何阻止事件默认行为？**
+
+- `e.preventDefault()`: 取消事件
+
+如果 `addEventListener` 第三个参数 `{ passive: true}`，`preventDefault` 将会会无效
+
+**如何判断事件是否“可阻止”？**
+
+#### `event.cancelable`
+
+- `true`：事件**可以**被 `preventDefault()` 阻止
+- `false`：调用 `preventDefault()` **不会生效**
+
+**推荐回答**
+
+>在 DOM 事件模型中，阻止事件默认行为的标准方式是调用 `event.preventDefault()`，它可以阻止浏览器在事件触发后执行的内置行为，例如表单提交、链接跳转等。
+>
+>并不是所有事件都支持阻止默认行为，可以通过事件对象的 `event.cancelable` 属性判断该事件是否可被阻止，只有当 `cancelable` 为 `true` 时，`preventDefault()` 才会生效。
+>
+>此外，在使用 `addEventListener` 时，如果第三个参数中设置了 `{ passive: true }`，表示该监听器不会调用 `preventDefault()`，此时即使事件本身是可取消的，调用 `preventDefault()` 也会失效]。
+>
+>需要注意的是，`preventDefault()` 只负责阻止默认行为，而不会影响事件传播，事件传播需要使用 `stopPropagation()` 来控制。
