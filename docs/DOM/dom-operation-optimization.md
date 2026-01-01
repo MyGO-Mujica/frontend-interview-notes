@@ -662,10 +662,10 @@ s2.onclick = function () {
 4. **e.target 与 e.currentTarget 的关系**
 
 - 当事件绑定在子元素自身时：
-   `e.target === e.currentTarget`
+  `e.target === e.currentTarget`
 - 当使用事件委托（事件绑定在父元素）时：
-   `e.target` 指向子元素
-   `e.currentTarget` 指向父元素
+  `e.target` 指向子元素
+  `e.currentTarget` 指向父元素
 
 ------
 
@@ -687,3 +687,103 @@ s2.onclick = function () {
 >
 >使用事件委托可以减少事件绑定数量，降低内存消耗，同时还能很好地支持动态添加的子元素。另外，React 把所有事件委托在 Root Element，用以提升性能。
 
+
+
+### 9. input
+
+#### 1. input 中监听值的变化是在监听什么事件？
+
+一、核心结论（直接回答面试官）
+
+在 `<input>` 中监听值的变化，本质上是在监听**原生 DOM 的 `input` 事件**。
+
+------
+
+二、原生 DOM 层面的解释（必须说清）
+
+在原生 JavaScript 中：
+
+- `input` 事件
+  - **当输入框的值发生变化时立即触发**
+  - 包括键盘输入、粘贴、剪切、拖拽等
+  - 是监听输入值变化的**首选事件**
+- `change` 事件
+  - 通常在**失去焦点或按回车后才触发**
+  - 不是实时的
+
+因此，如果要监听“值的实时变化”，监听的是 **`input` 事件，而不是 `change`**。
+
+------
+
+三、React / Vue 中的对应关系（加分点）
+
+在主流前端框架中：
+
+- React 的 `onChange`
+  - 行为上等价于原生 `input` 事件
+  - 底层基于 `input` 事件封装成合成事件
+- Vue 的 `v-model`
+  - 本质也是监听原生 `input` 事件
+  - 并在 `input` 事件中同步数据
+
+------
+
+四、标准面试**推荐回答**（可直接使用）
+
+> 在 `<input>` 中监听值的变化，本质上是监听原生 DOM 的 `input` 事件。
+>  `input` 事件在输入内容发生变化时会立即触发，适用于实时获取输入值；而 `change` 事件通常在失去焦点后才触发，不适合实时监听。
+>  因此，无论是在原生 JavaScript 还是在 React、Vue 等框架中，输入值变化的监听核心都是 `input` 事件。
+
+
+
+#### 2. React 中监听 input 的 onChange 事件的原生事件是什么？
+
+一、核心结论（先给面试官的直接答案）
+
+在 React 中，`onChange` 事件底层**主要基于原生 DOM 的 `input` 事件**，而不是 `change` 事件。
+ React 对原生事件做了一层封装，提供了一个**跨浏览器一致的合成事件（SyntheticEvent）**。
+
+------
+
+二、为什么不是原生 `change` 事件
+
+原生 DOM 中：
+
+- `input` 事件：
+  - **输入内容实时变化就触发**
+  - 适用于 `<input />`、`<textarea />`
+- `change` 事件：
+  - **失去焦点或回车后才触发**
+  - 不是实时的
+
+而 React 的 `onChange`：
+
+- **每次输入内容变化都会触发**
+- 行为上等价于原生的 `input` 事件
+- 与原生 `change` 的触发时机不同
+
+因此，React 的 `onChange` 并不是简单地绑定了原生 `change`。
+
+------
+
+
+
+React 内部会：
+
+- 监听原生的 `input`、`change`、`composition` 等事件
+- 在不同浏览器下做兼容处理
+- 最终统一派发为一个 **`onChange` 合成事件**
+
+所以：
+
+- 你拿到的不是原生事件对象
+- 而是 `SyntheticEvent`
+- 但它的行为更接近原生 `input` 事件
+
+------
+
+四、标准面试推荐回答（可直接背）
+
+> 在 React 中，`input` 的 `onChange` 事件底层主要是基于原生 DOM 的 **`input` 事件**，而不是 `change` 事件。
+>  React 对原生事件进行了封装，通过合成事件机制统一不同浏览器的行为，使 `onChange` 在输入值发生变化时就会触发，表现为实时更新。
+>  因此，React 的 `onChange` 在语义上更接近原生的 `input` 事件。
