@@ -731,8 +731,8 @@ s2.onclick = function () {
 四、标准面试**推荐回答**（可直接使用）
 
 > 在 `<input>` 中监听值的变化，本质上是监听原生 DOM 的 `input` 事件。
->  `input` 事件在输入内容发生变化时会立即触发，适用于实时获取输入值；而 `change` 事件通常在失去焦点后才触发，不适合实时监听。
->  因此，无论是在原生 JavaScript 还是在 React、Vue 等框架中，输入值变化的监听核心都是 `input` 事件。
+> `input` 事件在输入内容发生变化时会立即触发，适用于实时获取输入值；而 `change` 事件通常在失去焦点后才触发，不适合实时监听。
+> 因此，无论是在原生 JavaScript 还是在 React、Vue 等框架中，输入值变化的监听核心都是 `input` 事件。
 
 
 
@@ -785,5 +785,90 @@ React 内部会：
 四、标准面试推荐回答（可直接背）
 
 > 在 React 中，`input` 的 `onChange` 事件底层主要是基于原生 DOM 的 **`input` 事件**，而不是 `change` 事件。
->  React 对原生事件进行了封装，通过合成事件机制统一不同浏览器的行为，使 `onChange` 在输入值发生变化时就会触发，表现为实时更新。
->  因此，React 的 `onChange` 在语义上更接近原生的 `input` 事件。
+> React 对原生事件进行了封装，通过合成事件机制统一不同浏览器的行为，使 `onChange` 在输入值发生变化时就会触发，表现为实时更新。
+> 因此，React 的 `onChange` 在语义上更接近原生的 `input` 事件。
+
+
+
+## 10. ClipBoard API
+
+#### 1. 在浏览器中如何获取剪切板中内容
+
+**一、核心知识点（面试必答）**
+
+1. **获取剪切板内容的标准方式：Clipboard API**
+
+浏览器通过 **Clipboard API** 提供对剪切板的访问能力，主要方法是：
+
+- `navigator.clipboard.readText()`
+   用于**读取剪切板中的文本内容**
+- `navigator.clipboard.writeText(text)`
+   用于**向剪切板写入内容**
+
+------
+
+2. **使用前提与限制（非常关键）**
+
+面试官**重点关注这些点**：
+
+1. **必须在安全上下文**
+
+   - 仅支持 `https` 或 `localhost`
+
+2. **必须由用户触发**
+
+   - 通常需要在 `click`、`keydown` 等用户交互事件中调用
+
+3. **返回 Promise**
+
+   - 属于异步 API，需要使用 `then / catch` 或 `async / await`
+
+4. **权限控制**
+
+   - 浏览器可能弹出授权提示
+   - 用户可拒绝访问剪切板
+
+   ------
+
+   **二、标准示例**
+
+```javascript
+async function getClipboardText() {
+  try {
+    const text = await navigator.clipboard.readText()
+    console.log(text)
+  } catch (err) {
+    console.error('读取剪切板失败', err)
+  }
+}
+```
+
+
+
+---
+
+**三、兼容性与旧方案**
+
+在早期浏览器中，可以通过 `document.execCommand('paste')` 读取剪切板：
+
+```javascript
+document.execCommand('paste')
+```
+
+但该方式：
+
+- 已被废弃（deprecated）
+- 受限严重
+- 现代浏览器基本不可用
+
+**不推荐使用**
+
+---
+
+**面试推荐回答**
+
+>   在浏览器中获取剪切板内容，主要通过 HTML5 提供的 Clipboard API。
+>  使用 `navigator.clipboard.readText()` 可以异步读取剪切板中的文本内容。
+>  该 API 必须运行在 HTTPS 环境下，并且通常需要由用户交互事件触发，比如点击按钮。
+>  同时它是基于 Promise 的，浏览器会进行权限控制，用户可能拒绝访问。
+>  旧的 `document.execCommand('paste')` 方法已经被废弃，不建议使用。
