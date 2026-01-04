@@ -801,9 +801,9 @@ React 内部会：
 浏览器通过 **Clipboard API** 提供对剪切板的访问能力，主要方法是：
 
 - `navigator.clipboard.readText()`
-   用于**读取剪切板中的文本内容**
+  用于**读取剪切板中的文本内容**
 - `navigator.clipboard.writeText(text)`
-   用于**向剪切板写入内容**
+  用于**向剪切板写入内容**
 
 ------
 
@@ -861,14 +861,30 @@ document.execCommand('paste')
 - 受限严重
 - 现代浏览器基本不可用
 
-**不推荐使用**
+因此，**不推荐使用**
 
 ---
 
 **面试推荐回答**
 
 >   在浏览器中获取剪切板内容，主要通过 HTML5 提供的 Clipboard API。
->  使用 `navigator.clipboard.readText()` 可以异步读取剪切板中的文本内容。
->  该 API 必须运行在 HTTPS 环境下，并且通常需要由用户交互事件触发，比如点击按钮。
->  同时它是基于 Promise 的，浏览器会进行权限控制，用户可能拒绝访问。
->  旧的 `document.execCommand('paste')` 方法已经被废弃，不建议使用。
+>   使用 `navigator.clipboard.readText()` 可以异步读取剪切板中的文本内容。
+>   该 API 必须运行在 HTTPS 环境下，并且通常需要由用户交互事件触发，比如点击按钮。
+>   同时它是基于 Promise 的，浏览器会进行权限控制，用户可能拒绝访问。
+>   旧的 `document.execCommand('paste')` 方法已经被废弃，不建议使用。
+
+
+
+#### 2.浏览器的剪切板中如何监听复制事件
+
+>   在浏览器中可以通过监听 DOM 的 `copy` 事件来获取用户复制行为，通常使用 `addEventListener('copy', handler)`。在事件对象中可以通过 `event.clipboardData` 读取或设置剪切板内容，例如使用 `getData('text/plain')` 获取复制的文本。
+>
+>   需要注意的是，剪切板操作受到浏览器安全策略限制，必须由用户主动触发，不能在脚本中随意读取。另外，现代浏览器还提供了 `navigator.clipboard` API，用于在 HTTPS 环境下异步读写剪切板。
+
+
+
+#### 3.如何实现页面文本不可复制
+
+>  页面文本不可复制一般通过前端交互限制实现，比如使用 CSS 的 `user-select: none` 禁止文本选中，或者监听 `copy` 事件并调用 `preventDefault()` 阻止复制行为。
+>
+>  但需要说明的是，这种方式只能提高操作门槛，无法从根本上防止内容被获取。只要内容已经渲染到浏览器中，就一定可以通过开发者工具或网络请求拿到，真正的安全控制必须放在后端。
