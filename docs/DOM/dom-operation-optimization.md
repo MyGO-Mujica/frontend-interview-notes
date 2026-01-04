@@ -632,7 +632,7 @@ s2.onclick = function () {
 
 
 
-#### 3. 什么是事件委托，e.currentTarget 与 e.target 有何区别
+#### 3. 什么是事件委托(事件代理)，e.currentTarget 与 e.target 有何区别
 
 **一、核心知识点总结**
 
@@ -888,3 +888,16 @@ document.execCommand('paste')
 >  页面文本不可复制一般通过前端交互限制实现，比如使用 CSS 的 `user-select: none` 禁止文本选中，或者监听 `copy` 事件并调用 `preventDefault()` 阻止复制行为。
 >
 >  但需要说明的是，这种方式只能提高操作门槛，无法从根本上防止内容被获取。只要内容已经渲染到浏览器中，就一定可以通过开发者工具或网络请求拿到，真正的安全控制必须放在后端。
+
+
+
+### 11.fetch 中 credentials 指什么意思
+
+
+
+>`fetch` 中的 `credentials` 用于控制请求是否携带浏览器自动管理的凭证信息，比如 Cookie。它有三个取值：
+>
+>- `omit` 表示不携带任何凭证；
+>- `same-origin` 是默认值，仅同源请求携带 Cookie；
+>- `include` 表示同源和跨域请求都会携带 Cookie。
+
