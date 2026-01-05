@@ -901,3 +901,27 @@ document.execCommand('paste')
 >- `same-origin` 是默认值，仅同源请求携带 Cookie；
 >- `include` 表示同源和跨域请求都会携带 Cookie。
 
+
+
+### 12.如何取消请求的发送
+
+>在前端中，请求一旦发出就无法真正从客户端撤回，但可以通过浏览器提供的机制中断请求或忽略响应。
+>
+>对于 `fetch`，通常使用 `AbortController`，通过 `signal` 控制请求，在需要时调用 `abort()` 取消；
+>
+>对于 `axios`，在新版本中同样推荐使用 `AbortController`，早期的 `CancelToken` 已经废弃；
+>
+>对于`XMLHttpRequest`,通过 `xhr.abort()` 终止请求
+
+
+
+### 13. 如何判断当前环境是移动端还是PC端
+
+当然，不要重复造轮子，推荐一个库: https://github.com/kaimallea/isMobile
+
+```javascript
+import isMobile from 'ismobilejs'
+ 
+const mobile = isMobile()
+```
+
