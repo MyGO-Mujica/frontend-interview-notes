@@ -925,3 +925,104 @@ import isMobile from 'ismobilejs'
 const mobile = isMobile()
 ```
 
+
+
+### 14. 简单介绍 requestIdleCallback 及使用场景
+
+**一、requestIdleCallback 的核心知识点**
+
+**1. 基本概念**
+ `requestIdleCallback` 是浏览器提供的一个 API，用于在**主线程空闲时**执行低优先级任务，避免影响关键渲染和用户交互。
+
+**2. 执行时机**
+
+- 浏览器完成一次帧的渲染（Layout / Paint）
+- 当前没有高优先级任务（如用户输入、动画）
+- 剩余的空闲时间内执行回调
+
+**3. 回调参数**
+ 回调函数会接收一个 `IdleDeadline` 对象：
+
+- `deadline.timeRemaining()`：当前空闲时间剩余（毫秒）
+- `deadline.didTimeout`：是否因超时被强制执行
+
+**4. 可选配置**
+
+```javascript
+requestIdleCallback(callback, { timeout: 2000 })
+```
+
+- `timeout`：即使主线程一直忙，超过该时间也会强制执行
+
+**5. 特点总结**
+
+- 非实时执行
+- 可能被延迟
+- 适合低优先级、可拆分任务
+
+------
+
+**二、典型使用场景**
+
+**1. 首屏渲染后的非关键任务**
+
+- 数据预处理
+- 本地缓存写入
+- 日志上报
+
+**2. 性能优化场景**
+
+- 大数组的分片计算
+- 复杂但不紧急的数据统计
+- 长列表预计算
+
+**3. 资源预加载**
+
+- 预加载图片
+- 预解析数据
+- 非关键模块初始化
+
+---
+
+**三、推荐做法：requestIdleCallback 分片执行**
+
+1️⃣ 将大任务拆成小任务
+
+```javascript
+const taskQueue = data.slice() // 复制一份任务队列
+
+function performWork(deadline) {
+  while (
+    deadline.timeRemaining() > 0 &&
+    taskQueue.length > 0
+  ) {
+    const item = taskQueue.shift()
+    heavyFormat(item)
+  }
+
+  // 如果任务还没做完，继续等下一个空闲期
+  if (taskQueue.length > 0) {
+    requestIdleCallback(performWork)
+  } else {
+    localStorage.setItem('list', JSON.stringify(data))
+  }
+}
+
+```
+
+2️⃣ 启动空闲任务
+
+```javascript
+requestIdleCallback(performWork, { timeout: 2000 })
+```
+
+---
+
+
+
+**四、面试推荐回答（可直接背）**
+
+>   `requestIdleCallback` 是浏览器提供的一个在主线程空闲时执行任务的 API，主要用于处理低优先级、不影响用户体验的工作。
+>  它会在浏览器完成渲染并且有空闲时间时调用回调，并通过 `timeRemaining()` 告诉开发者还能执行多久。
+>  常见使用场景包括首屏渲染后的数据处理、日志上报、缓存写入以及大任务的分片执行，用于提升页面性能和响应速度。
+>  它不适合用于动画或高实时性任务。
