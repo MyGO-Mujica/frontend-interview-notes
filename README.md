@@ -17,5 +17,5 @@ frontend-interview-notes/
 - [DOM操作与优化](./docs/dom-operation-optimization.md)
 
 ### JavaScript
-- [DOM操作与优化](./docs/JavaScript.md)
+- [JavaScript](./docs/JavaScript.md)
 
