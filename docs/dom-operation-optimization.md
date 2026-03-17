@@ -97,7 +97,7 @@ function getMostFrequentTag() {
 
 
 
-#### 3. JSONP 的原理是什么，如何实现
+#### 1. JSONP 的原理是什么，如何实现
 
 `JSONP`，全称 `JSON with Padding`，为了解决跨域的问题而出现。虽然它只能处理 GET 跨域，虽然现在基本上都使用 CORS 跨域，但仍然要知道它，毕竟**面试会问**。
 
@@ -306,7 +306,7 @@ observer.observe(img)
 
 8. sameSite
 
-   用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
+    用于限制跨站请求时 Cookie 是否能发送，防止 CSRF。常见取值：
 
    - `Strict`：完全禁止跨站发送
    - `Lax`：部分跨站允许（如 Get 导航）
@@ -701,10 +701,10 @@ s2.onclick = function () {
 4. **e.target 与 e.currentTarget 的关系**
 
 - 当事件绑定在子元素自身时：
-  `e.target === e.currentTarget`
+   `e.target === e.currentTarget`
 - 当使用事件委托（事件绑定在父元素）时：
-  `e.target` 指向子元素
-  `e.currentTarget` 指向父元素
+   `e.target` 指向子元素
+   `e.currentTarget` 指向父元素
 
 ------
 
@@ -770,8 +770,8 @@ s2.onclick = function () {
 四、标准面试**推荐回答**（可直接使用）
 
 > 在 `<input>` 中监听值的变化，本质上是监听原生 DOM 的 `input` 事件。
-> `input` 事件在输入内容发生变化时会立即触发，适用于实时获取输入值；而 `change` 事件通常在失去焦点后才触发，不适合实时监听。
-> 因此，无论是在原生 JavaScript 还是在 React、Vue 等框架中，输入值变化的监听核心都是 `input` 事件。
+>  `input` 事件在输入内容发生变化时会立即触发，适用于实时获取输入值；而 `change` 事件通常在失去焦点后才触发，不适合实时监听。
+>  因此，无论是在原生 JavaScript 还是在 React、Vue 等框架中，输入值变化的监听核心都是 `input` 事件。
 
 
 
@@ -840,9 +840,9 @@ React 内部会：
 浏览器通过 **Clipboard API** 提供对剪切板的访问能力，主要方法是：
 
 - `navigator.clipboard.readText()`
-  用于**读取剪切板中的文本内容**
+   用于**读取剪切板中的文本内容**
 - `navigator.clipboard.writeText(text)`
-  用于**向剪切板写入内容**
+   用于**向剪切板写入内容**
 
 ------
 
@@ -1062,9 +1062,9 @@ requestIdleCallback(performWork, { timeout: 2000 })
 **四、面试推荐回答（可直接背）**
 
 >   `requestIdleCallback` 是浏览器提供的一个在主线程空闲时执行任务的 API，主要用于处理低优先级、不影响用户体验的工作。
->   它会在浏览器完成渲染并且有空闲时间时调用回调，并通过 `timeRemaining()` 告诉开发者还能执行多久。
->   常见使用场景包括首屏渲染后的数据处理、日志上报、缓存写入以及大任务的分片执行，用于提升页面性能和响应速度。
->   它不适合用于动画或高实时性任务。
+>  它会在浏览器完成渲染并且有空闲时间时调用回调，并通过 `timeRemaining()` 告诉开发者还能执行多久。
+>  常见使用场景包括首屏渲染后的数据处理、日志上报、缓存写入以及大任务的分片执行，用于提升页面性能和响应速度。
+>  它不适合用于动画或高实时性任务。
 
 
 
@@ -1076,3 +1076,29 @@ requestIdleCallback(performWork, { timeout: 2000 })
 
 
 
+
+### 16 异步加载 JS 脚本时，async 与 defer 有何区别
+
+如图所示
+
+![async 与 defer 区别](https://html.spec.whatwg.org/images/asyncdefer.svg)
+
+![The ultimate guide to Webflow site performance optimization](https://images.openai.com/static-rsc-4/_Q4OT9tMp5tfJ1CrUlGeu7GtI5hBvRtB9FSKeWREs_MReogsawSF9zOChll1xncQojhjlnS_WY_8HsLLzIX9utl0H3aBl_tDplT2esWzLzwORfkRzJUElyk2qFfNMb1UXQKVkRb_uK0tgQ0_oWOKM4-GS6BojCrp_caJIgIz7n8ohP401UmCmRXweYD-hK3x?purpose=fullsize)
+
+在*正常情况下*，即 `<script>` 没有任何额外属性标记的情况下，有几点共识
+
+1. JS 的脚本分为**加载、解析、执行**几个步骤，简单对应到图中就是 `fetch` (加载) 和 `execution` (解析并执行)
+2. **JS 的脚本加载(fetch)且执行(execution)会阻塞 DOM 的渲染**，因此 JS 一般放到最后头
+
+而 `defer` 与 `async` 的区别如下:
+
+- 相同点: **异步加载 (fetch)**
+- 不同点:
+  - async 加载(fetch)完成后立即执行 (execution)，因此可能会阻塞 DOM 解析；
+  - defer 加载(fetch)完成后延迟到 DOM 解析完成后才会执行(execution)**，但会在事件 `DomContentLoaded` 之前
+
+### 17 React/Vue 中的 router 实现原理如何
+>  前端路由主要通过监听 URL 的变化并渲染不同组件实现。
+常见实现方式有 Hash 路由和 History 路由。
+Hash 路由通过监听 hashchange 事件，History 路由通过 pushState 和 popstate 实现。
+当 URL 变化时，Router 会匹配对应的路由配置并渲染对应组件，从而实现单页应用的页面切换而不刷新页面。
