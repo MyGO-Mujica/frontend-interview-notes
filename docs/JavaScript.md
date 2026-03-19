@@ -168,4 +168,25 @@
 - Promise.any() 🎯 任意一个成功即可（全部失败才报错）
 
 
+#### 4. js 中什么是可选链操作符，如何访问数组
+
+**可选链运算符（?.）**
+  用于访问对象的属性或调用函数。如果使用此运算符访问的对象或调用的函数是 undefined 或 null，则表达式会短路并计算为 undefined，而不是抛出错误。用于**安全访问对象属性**，避免出现 undefined / null 报错。 
+
+```javascript
+const user = {}
+user.profile.name // ❌ 报错
+user.profile?.name // ✅ undefined（不会报错）
+```
+
+
+
+可选链同样可以用于数组：
+
+```javascript
+const arr = [1, 2, 3]
+
+arr?.[0]  // 1
+arr?.[10] // undefined
+```
 
