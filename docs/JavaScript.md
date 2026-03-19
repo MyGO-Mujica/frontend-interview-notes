@@ -7,7 +7,7 @@
 #### 1.JavaScript中基本数据类型
 
 - number
-- bigint: **这个常常会忽略，最新加入的**
+- bigint: **这个常常会忽略，最新加入  在 JavaScript 中，BigInt 是一种数字数据类型，它可以表示的整数**。 
 - string
 - undefined
 - null
@@ -38,7 +38,7 @@
 >
 >const arr = [];
 >for (let i = 0; i < arrayLike.length; i++) {
->  	arr.push(arrayLike[i]);
+>	arr.push(arrayLike[i]);
 >}
 
 #### 3.Number、String、Array、Object、Promise API
@@ -49,7 +49,7 @@
 
 - `Number.isNaN(value)` → 判断是不是 NaN（比 isNaN 更严格）
 - `Number.isFinite(value)` → 是否是有限数
-- `Number.parseInt()` / `Number.parseFloat()` →字符串转数字
+- `Number.parseInt()` / `Number.parseFloat()` →函数将其第一个参数转换为一个字符串，对该字符串进行解析，然后返回一个整数/浮点数或 `NaN`
 
 2️⃣ 实例方法（num.xxx）
 
@@ -113,7 +113,7 @@
 ✅ 面试标准回答（先说结论）
 
 > `map` 会返回一个新数组，适合做“数据转换”；
->  `forEach` 没有返回值，适合做“副作用操作”。
+> `forEach` 没有返回值，适合做“副作用操作”。
 
 ###### ② reduce 能做什么？
 
