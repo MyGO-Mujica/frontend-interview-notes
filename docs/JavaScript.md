@@ -28,18 +28,22 @@
 - `NodeList`（如 `document.querySelectorAll`）
 - `HTMLCollection`
 
->Array.from(arrayLike);
->
->const arr = [...arrayLike];
->
->Array.prototype.concat.apply([], arrayLike);
->
->
->
->const arr = [];
->for (let i = 0; i < arrayLike.length; i++) {
->	arr.push(arrayLike[i]);
->}
+```javascript
+Array.from(arrayLike);
+
+const arr = [...arrayLike];
+
+Array.prototype.concat.apply([], arrayLike);
+
+
+
+const arr = [];
+for (let i = 0; i < arrayLike.length; i++) {
+	arr.push(arrayLike[i]);
+}
+```
+
+
 
 #### 3.Number、String、Array、Object、Promise API
 
