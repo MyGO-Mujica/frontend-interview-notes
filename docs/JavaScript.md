@@ -171,6 +171,27 @@ for (let i = 0; i < arrayLike.length; i++) {
 
 - `Promise.any()` 🎯 任意一个成功即可（全部失败才报错）
 
+###### Promise.allSettled() 
+```
+const promises = [
+  Promise.resolve(1),
+  Promise.reject('error'),
+  Promise.resolve(3)
+];
+
+Promise.allSettled(promises).then(results => {
+  console.log(results);
+});
+```
+输出结果：
+```
+[
+  { status: 'fulfilled', value: 1 },
+  { status: 'rejected', reason: 'error' },
+  { status: 'fulfilled', value: 3 }
+]
+```
+>  Promise.allSettled() 用于并发执行多个异步任务，并在所有任务都结束（无论成功或失败）后返回每个任务的结果状态，不会因为某个失败而中断。 它返回的是一个包含每个 Promise 执行结果的数组，每一项都有 status（fulfilled 或 rejected）以及对应的 value 或 reason，适合需要拿到全部结果的场景，比如批量请求。 
 
 #### 4. js 中什么是可选链操作符，如何访问数组
 
