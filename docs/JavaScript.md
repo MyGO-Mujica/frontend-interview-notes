@@ -151,25 +151,25 @@ for (let i = 0; i < arrayLike.length; i++) {
 
 1️⃣ 实例方法
 
-- then() ✨ 成功回调（支持链式调用，返回新的 Promise）
+- `then()` ✨ 成功回调（支持链式调用，返回新的 Promise）
 
-- catch() ❗ 失败回调（等价于 then(null, fn)，可捕获链式错误）
+- `catch()` ❗ 失败回调（等价于 then(null, fn)，可捕获链式错误）
 
-- finally() 🧩 最终执行（无论成功失败都会执行，不影响结果）
+- `finally()` 🧩 最终执行（无论成功失败都会执行，不影响结果）
 
 2️⃣ 静态方法
 
-- Promise.resolve() ✅ 返回一个成功的 Promise（传 Promise 会原样返回）
+- `Promise.resolve()` ✅ 返回一个成功的 Promise（传 Promise 会原样返回）
 
-- Promise.reject() ❌ 返回一个失败的 Promise
+- `Promise.reject()` ❌ 返回一个失败的 Promise
 
-- Promise.all() 📦 全部成功才成功（有一个失败就直接失败，常用于并发请求）
+- `Promise.all()` 📦 全部成功才成功（有一个失败就直接失败，常用于并发请求）
 
-- Promise.race() ⏱️ 谁先完成用谁，只看**谁先结束**（谁先 resolve / reject 就返回谁，常用于超时控制 / 抢结果场景）
+-` Promise.race()` ⏱️ 谁先完成用谁，只看**谁先结束**（谁先 resolve / reject 就返回谁，常用于超时控制 / 抢结果场景）
 
-- Promise.allSettled() 📊 全部执行完才返回（不管成功失败，返回状态数组）
+- `Promise.allSettled()` 📊 全部执行完才返回（不管成功失败，返回状态数组）
 
-- Promise.any() 🎯 任意一个成功即可（全部失败才报错）
+- `Promise.any()` 🎯 任意一个成功即可（全部失败才报错）
 
 
 #### 4. js 中什么是可选链操作符，如何访问数组
