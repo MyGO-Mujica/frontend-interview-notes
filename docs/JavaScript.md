@@ -200,3 +200,5 @@ arr?.[10] // undefined
 ##### 1.TypedArray
  >  TypedArray 是基于 ArrayBuffer 的类型化视图，用固定数据类型（如 Uint8、Float32）来高效读写和解析二进制数据。
 
+##### 2. ArrayBuffer / TypedArray / Blob 三者关系
+>  ArrayBuffer 是底层二进制内存，TypedArray 是对其进行类型化读写的视图，而 Blob 是对二进制数据的封装，用于文件处理和网络传输。
