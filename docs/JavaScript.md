@@ -194,3 +194,9 @@ arr?.[0]  // 1
 arr?.[10] // undefined
 ```
 
+####  前端中遇到过处理二进制的场景吗？
+ >  有的，比如文件上传下载、图片处理等场景，本质都是在处理二进制数据，前端通常基于 Blob、ArrayBuffer 和 FileReader 来操作，比如上传通过 FormData 发送 Blob，下载通过 Blob 配合 URL.createObjectURL 实现文件保存
+
+##### 1.TypedArray
+ >  TypedArray 是基于 ArrayBuffer 的类型化视图，用固定数据类型（如 Uint8、Float32）来高效读写和解析二进制数据。
+
