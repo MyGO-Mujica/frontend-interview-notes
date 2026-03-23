@@ -227,3 +227,47 @@ arr?.[10] // undefined
 #### 6. 什么是 Iterable 对象，与 Array 有什么区别？
 
 >Iterable 是实现了 `Symbol.iterator` 方法的对象、可以被 `for...of` 遍历的对象；Array 是其中一种具体的数据结构，属于 Iterable 的子集。
+
+#### 7. 解构赋值以下对象，他们的值是多少
+##### 1.```const {a: aa, b } = {a: 3, b: 4} ```
+```
+console.log(a);  // ❌ 报错：a is not defined
+console.log(aa); // ✅ 3
+console.log(b);  // ✅ 4
+```
+> a: aa 表示把属性 a 的值赋给变量 aa，不会创建变量 a，所以 a 是未定义，aa 是 3，b 是 4。
+
+##### 2. move
+```
+//这种写法x,y有默认值
+function move({x = 0, y = 0} = {}) {
+  return [x, y];
+}
+```
+ 逻辑拆解
+参数默认值：= {}（只有在参数是 undefined 时才用）
+解构默认值：x = 0, y = 0（属性不存在才用）
+```
+move({ x: 3, y: 8 }); // [3, 8]
+move({ x: 3 });       // [3, 0]
+move({});             // [0, 0]
+move();               // [0, 0]
+```
+```
+//这种写法x,y没有默认值
+function move({x, y} = { x: 0, y: 0 }) {
+  return [x, y];
+}
+```
+ 逻辑拆解
+参数默认值：= { x:0, y:0 }
+❌ 没有解构默认值
+```
+move({ x: 3, y: 8 }); // [3, 8]
+move({ x: 3 });       // [3, undefined]
+move({});             // [undefined, undefined]
+move();               // [0, 0]
+```
+>参数默认值只在“没传参数”时生效，而解构默认值是在“属性为 undefined”时生效。
+参数默认值解决“有没有传”，
+解构默认值解决“有没有这个属性”。
