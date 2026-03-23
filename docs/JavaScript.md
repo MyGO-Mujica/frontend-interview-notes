@@ -93,9 +93,9 @@ for (let i = 0; i < arrayLike.length; i++) {
 
 2️⃣ 遍历类（非常重要）
 
-- `map()` 👉 映射
-- `filter()` 👉 过滤
-- `reduce()` 👉 聚合（面试重点！）
+- `map()` → 映射
+- `filter()` → 过滤
+- `reduce()` → 聚合（面试重点！）
 - `forEach()`
 
 3️⃣ 判断类
@@ -130,15 +130,15 @@ for (let i = 0; i < arrayLike.length; i++) {
 
 1️⃣ 静态方法
 
-- `Object.keys(obj)` 👉 返回 key 数组
+- `Object.keys(obj)`  → 返回 key 数组
 - `Object.values(obj)`
 - `Object.entries(obj)`
-- `Object.assign(target, source)` 👉 合并对象
+- `Object.assign(target, source)`  → 合并对象
 
 2️⃣ 对象控制
 
-- `Object.freeze()` 👉 冻结（不可修改）
-- `Object.seal()` 👉 可改值不可增删
+- `Object.freeze()`  → 冻结（不可修改）
+- `Object.seal()`  → 可改值不可增删
 
 3️⃣ 原型相关
 
