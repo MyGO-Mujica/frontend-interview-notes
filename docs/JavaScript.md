@@ -215,7 +215,7 @@ arr?.[0]  // 1
 arr?.[10] // undefined
 ```
 
-####  前端中遇到过处理二进制的场景吗？
+####  5. 前端中遇到过处理二进制的场景吗？
  >  有的，比如文件上传下载、图片处理等场景，本质都是在处理二进制数据，前端通常基于 Blob、ArrayBuffer 和 FileReader 来操作，比如上传通过 FormData 发送 Blob，下载通过 Blob 配合 URL.createObjectURL 实现文件保存
 
 ##### 1.TypedArray
@@ -223,3 +223,7 @@ arr?.[10] // undefined
 
 ##### 2. ArrayBuffer / TypedArray / Blob 三者关系
 >  ArrayBuffer 是底层二进制内存，TypedArray 是对其进行类型化读写的视图，而 Blob 是对二进制数据的封装，用于文件处理和网络传输。
+
+#### 6. 什么是 Iterable 对象，与 Array 有什么区别？
+
+>Iterable 是实现了 `Symbol.iterator` 方法的对象、可以被 `for...of` 遍历的对象；Array 是其中一种具体的数据结构，属于 Iterable 的子集。
