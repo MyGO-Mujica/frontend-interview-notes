@@ -237,6 +237,14 @@ console.log(b);  // ✅ 4
 ```
 > a: aa 表示把属性 a 的值赋给变量 aa，不会创建变量 a，所以 a 是未定义，aa 是 3，b 是 4。
 
+等价理解
+```
+const obj = { a: 3, b: 4 };
+
+const aa = obj.a;
+const b = obj.b;
+```
+
 ##### 2. move
 ```
 //这种写法x,y有默认值
