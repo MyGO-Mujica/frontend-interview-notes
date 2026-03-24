@@ -136,6 +136,7 @@ Object.prototype.toString.call(value) === '[object Array]'
 1️⃣ 静态方法
 
 - `Object.keys(obj)` → 返回 key 数组
+- `Object.getOwnPropertyNames(obj)`
 - `Object.values(obj)`
 - `Object.entries(obj)`
 - `Object.assign(target, source)` → 合并对象
@@ -165,7 +166,7 @@ Object.defineProperty(obj, prop, descriptor)
 Object.defineProperty(obj, 'name', {
   value: 'anno',
   writable: false,     // 是否可修改
-  enumerable: true,    // 是否可遍历，不可遍历属性无法通过 Object.keys 获取到
+  enumerable: true,    // 是否可枚举（遍历），不可枚举属性无法通过 Object.keys 获取到
   configurable: false  // 是否可删除 / 再配置
   value: 3,            // 该属性值的值
 })
@@ -184,6 +185,13 @@ Object.defineProperty(obj, 'name', {
 })
 ```
   >Object.defineProperty 用于定义或修改对象属性，通过属性描述符可以控制属性的读写、可枚举性，并通过 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
+
+###### 2. Object.keys 与 Object.getOwnPropertyNames() 有何区别
+- `Object.keys`：列出可枚举的属性值
+- `Object.getOwnPropertyNames`:列出所有属性值(包括可枚举与不可枚举)
+
+>*Object.defineProperty* 中的选项 enumerable 可定义属性是否可枚举
+
 
 ##### **5.Promise（异步核心**）
 
