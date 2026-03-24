@@ -144,11 +144,45 @@ Object.prototype.toString.call(value) === '[object Array]'
 
 - `Object.freeze()` → 冻结（不可修改）
 - `Object.seal()` → 可改值不可增删
+- `Object.defineProperty`
 
 3️⃣ 原型相关
 
 - `hasOwnProperty()`
 - `Object.create()`
+
+###### 1. 简述 Object.defineProperty
+  Object.defineProperty() 静态方法会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter / setter。并返回此对象。
+  🧱 基本语法
+```
+Object.defineProperty(obj, prop, descriptor)
+```
+  第三个参数 descriptor（属性描述符）是核心
+
+🔑 两种描述符（面试重点）
+1️⃣ 数据描述符
+```
+Object.defineProperty(obj, 'name', {
+  value: 'anno',
+  writable: false,     // 是否可修改
+  enumerable: true,    // 是否可遍历
+  configurable: false  // 是否可删除 / 再配置
+})
+```
+2️⃣ 存取描述符（getter / setter）
+```
+let value = ''
+
+Object.defineProperty(obj, 'name', {
+  get() {
+    return value
+  },
+  set(newVal) {
+    value = newVal
+  }
+})
+```
+  >Object.defineProperty 用于定义或修改对象属性，通过属性描述符可以控制属性的读写、可枚举性，并通过 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
 
 ##### **5.Promise（异步核心**）
 
