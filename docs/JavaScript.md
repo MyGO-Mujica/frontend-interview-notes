@@ -14,8 +14,9 @@
 - symbol
 - bool
 
-#### 2.在 js 中如何把类数组转化为数组
+#### 2.数组
 
+##### 1. 在 js 中如何把类数组转化为数组
 类数组（array-like）指的是：
 
 - 有 `length` 属性
@@ -35,14 +36,13 @@ const arr = [...arrayLike];
 
 Array.prototype.concat.apply([], arrayLike);
 
-
-
+// 底层
 const arr = [];
 for (let i = 0; i < arrayLike.length; i++) {
 	arr.push(arrayLike[i]);
 }
 ```
-
+##### 2. 如何判断某一个值是数组
 
 
 #### 3.Number、String、Array、Object、Promise API
@@ -294,3 +294,4 @@ move();               // [0, 0]
 
 >- `Map`: 可使用任何数据类型作为 key，但因其在内部实现原理中需要维护两个数组，存储 key/value，因此垃圾回收机制无法回收
 >- `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
+
