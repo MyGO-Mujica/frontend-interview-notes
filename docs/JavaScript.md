@@ -165,8 +165,9 @@ Object.defineProperty(obj, prop, descriptor)
 Object.defineProperty(obj, 'name', {
   value: 'anno',
   writable: false,     // 是否可修改
-  enumerable: true,    // 是否可遍历
+  enumerable: true,    // 是否可遍历，不可遍历属性无法通过 Object.keys 获取到
   configurable: false  // 是否可删除 / 再配置
+  value: 3,            // 该属性值的值
 })
 ```
 2️⃣ 存取描述符（getter / setter）
