@@ -55,6 +55,21 @@ Object.prototype.toString.call(value) === '[object Array]'
 [1,2,3] instanceof Array  // true
 //❌ 问题：iframe（跨作用域）会失效
 ```
+##### 3. 如何创建一个数组大小为100，每个值都为0的数组
+```
+// 方法一:
+Array(100).fill(0);
+ 
+// 方法二:
+// 注: 如果直接使用 map，会出现稀疏数组
+Array.from(Array(100), (x) => 0);
+ 
+// 方法二变体:
+Array.from({ length: 100 }, (x) => 0);
+
+// 方法三：
+const arr = new Array(100); arr.fill(0)
+```
 
 #### 3.Number、String、Array、Object、Promise API
 
@@ -356,3 +371,4 @@ move();               // [0, 0]
 
 > - `Map`: 可使用任何数据类型作为 key，但因其在内部实现原理中需要维护两个数组，存储 key/value，因此垃圾回收机制无法回收
 > - `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
+
