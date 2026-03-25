@@ -389,4 +389,50 @@ move();               // [0, 0]
 > - `Map`: 可使用任何数据类型作为 key，但因其在内部实现原理中需要维护两个数组，存储 key/value，因此垃圾回收机制无法回收
 > - `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
 
+#### 9. JS 如何检测到对象中有循环引用
+**循环引用**是指对象的某个属性，经过一系列引用，最终又指回它自己。
+```
+const obj = {}
+obj.self = obj
 
+obj → obj
+```
+📌 为什么这是问题？
+
+比如：
+```
+JSON.stringify(obj)
+```
+会直接报错：
+```
+TypeError: Converting circular structure to JSON
+```
+ 因为：
+
+程序在递归遍历
+永远走不出来（死循环）
+
+
+**检测对象中有循环引用思路**：可以通过 DFS 遍历对象，用 WeakSet 记录访问过的对象，如果再次访问同一个引用，就说明存在循环引用
+
+*手写代码*
+```
+function hasCycle(obj) {
+  const visited = new WeakSet()
+
+  function dfs(target) {
+    if (typeof target !== 'object' || target === null) return false
+    if (visited.has(target)) return true
+
+    visited.add(target)
+
+    for (let key in target) {
+      if (dfs(target[key])) return true
+    }
+
+    return false
+  }
+
+  return dfs(obj)
+}
+```
