@@ -53,7 +53,7 @@ Array.isArray(value) //true
 Object.prototype.toString.call(value) === '[object Array]'
 // 3 instanceof（有坑）
 [1,2,3] instanceof Array  // true
-//❌ 问题：iframe（跨作用）域会失效
+//❌ 问题：iframe（跨作用域）会失效
 ```
 
 #### 3.Number、String、Array、Object、Promise API
@@ -164,11 +164,10 @@ Object.defineProperty(obj, prop, descriptor)
 1️⃣ 数据描述符
 ```
 Object.defineProperty(obj, 'name', {
-  value: 'anno',
+  value: 'anno',       // 该属性值的值
   writable: false,     // 是否可修改
   enumerable: true,    // 是否可枚举（遍历），不可枚举属性无法通过 Object.keys 获取到
   configurable: false  // 是否可删除 / 再配置
-  value: 3,            // 该属性值的值
 })
 ```
 2️⃣ 存取描述符（getter / setter）
@@ -184,7 +183,7 @@ Object.defineProperty(obj, 'name', {
   }
 })
 ```
-  >Object.defineProperty 用于定义或修改对象属性，通过属性描述符可以控制属性的读写、可枚举性，并通过 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
+  >Object.defineProperty 会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
 
 ###### 2. Object.keys 与 Object.getOwnPropertyNames() 有何区别
 - `Object.keys`：列出可枚举的属性值
@@ -217,7 +216,7 @@ Object.defineProperty(obj, 'name', {
 
 - `Promise.any()` 🎯 任意一个成功即可（全部失败才报错）
 
-###### Promise.allSettled()
+###### 1. Promise.allSettled()
 
 ```
 const promises = [
