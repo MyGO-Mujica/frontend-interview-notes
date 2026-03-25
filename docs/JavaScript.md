@@ -55,15 +55,17 @@ Object.prototype.toString.call(value) === '[object Array]'
 [1,2,3] instanceof Array  // true
 //❌ 问题：iframe（跨作用域）会失效
 ```
+
 ##### 3. 如何创建一个数组大小为100，每个值都为0的数组
+
 ```
 // 方法一:
 Array(100).fill(0);
- 
+
 // 方法二:
 // 注: 如果直接使用 map，会出现稀疏数组
 Array.from(Array(100), (x) => 0);
- 
+
 // 方法二变体:
 Array.from({ length: 100 }, (x) => 0);
 
@@ -86,6 +88,14 @@ const arr = new Array(100); arr.fill(0)
 - `toFixed(n)` → 保留 n 位小数
 - `toPrecision(n)` → 指定精度
 - `toString()` → 转字符串
+
+###### 1. Number 中最大数、最大安全整数、EPSILON 都是多少，原理是什么
+| 属性                      | 值          | 含义                              | 原理                                                         |
+| ------------------------- | ----------- | --------------------------------- | ------------------------------------------------------------ |
+| `Number.MAX_VALUE`        | ≈ 1.79e+308 | JS 能表示的 **最大有限数**        | JS 的 Number 是 **64 位浮点数（IEEE 754）**                  |
+| `Number.MAX_SAFE_INTEGER` | 2^53 - 1    | 可以被“精确表示”的最大整数        | JS 的 Number 只有 53 位有效精度（52 位尾数 + 1 位隐含位），所以最多能精确表示到 2⁵³−1 |
+| `Number.EPSILON`          | 2^-52       | 1 和比 1 大的最小浮点数之间的差值 | 尾数只有 52 位(小数点后最多 52 位)                           |
+
 
 ##### 2.**String（字符串）**
 
@@ -168,15 +178,19 @@ const arr = new Array(100); arr.fill(0)
 - `Object.create()`
 
 ###### 1. 简述 Object.defineProperty
-  Object.defineProperty() 静态方法会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter / setter。并返回此对象。
-  🧱 基本语法
+
+Object.defineProperty() 静态方法会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter / setter。并返回此对象。
+🧱 基本语法
+
 ```
 Object.defineProperty(obj, prop, descriptor)
 ```
-  第三个参数 descriptor（属性描述符）是核心
+
+第三个参数 descriptor（属性描述符）是核心
 
 🔑 两种描述符（面试重点）
 1️⃣ 数据描述符
+
 ```
 Object.defineProperty(obj, 'name', {
   value: 'anno',       // 该属性值的值
@@ -185,7 +199,9 @@ Object.defineProperty(obj, 'name', {
   configurable: false  // 是否可删除 / 再配置
 })
 ```
+
 2️⃣ 存取描述符（getter / setter）
+
 ```
 let value = ''
 
@@ -198,14 +214,15 @@ Object.defineProperty(obj, 'name', {
   }
 })
 ```
-  >Object.defineProperty 会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
+
+> Object.defineProperty 会直接在一个对象上定义一个新属性，或修改其现有属性，可以定义属性的值、是否可修改、是否可枚举，以及设置 getter/setter 实现响应式监听，是 Vue2 响应式的核心实现
 
 ###### 2. Object.keys 与 Object.getOwnPropertyNames() 有何区别
+
 - `Object.keys`：列出可枚举的属性值
 - `Object.getOwnPropertyNames`:列出所有属性值(包括可枚举与不可枚举)
 
->*Object.defineProperty* 中的选项 enumerable 可定义属性是否可枚举
-
+> _Object.defineProperty_ 中的选项 enumerable 可定义属性是否可枚举
 
 ##### **5.Promise（异步核心**）
 
@@ -371,4 +388,5 @@ move();               // [0, 0]
 
 > - `Map`: 可使用任何数据类型作为 key，但因其在内部实现原理中需要维护两个数组，存储 key/value，因此垃圾回收机制无法回收
 > - `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
+
 
