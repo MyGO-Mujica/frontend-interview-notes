@@ -174,7 +174,7 @@ const arr = new Array(100); arr.fill(0)
 
 3️⃣ 原型相关
 
-- `hasOwnProperty()`
+- `hasOwnProperty()`→  方法返回一个布尔值，表示对象自有属性（而不是继承来的属性）中是否具有指定的属性
 - `Object.create()`
 
 ###### 1. 简述 Object.defineProperty
@@ -389,7 +389,8 @@ move();               // [0, 0]
 > - `Map`: 可使用任何数据类型作为 key，但因其在内部实现原理中需要维护两个数组，存储 key/value，因此垃圾回收机制无法回收
 > - `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
 
-#### 9. JS 如何检测到对象中有循环引用
+#### 9. 循环引用
+##### 1. JS 如何检测到对象中有循环引用
 **循环引用**是指对象的某个属性，经过一系列引用，最终又指回它自己。
 ```
 const obj = {}
@@ -434,5 +435,37 @@ function hasCycle(obj) {
   }
 
   return dfs(obj)
+}
+```
+##### 2. JS 深克隆时如何处理循环引用 (深拷贝的实现)
+深克隆（deep clone）指的是 **复制一个对象及其所有子对象，使得原对象和新对象互不影响**。
+
+如果对象内部存在循环引用,直接递归拷贝就会无限调用而导致栈溢出。
+
+解决思路：
+>深拷贝时，如果对象存在循环引用，递归会无限执行。解决方法是使用 WeakMap 记录已经拷贝过的对象，当再次遇到同一个对象时直接返回之前的拷贝结果，从而避免死循环。
+```
+function deepClone(obj, map = new WeakMap()) {
+  // 基本类型直接返回
+  if (typeof obj !== 'object' || obj === null) return obj
+
+  // 已经拷贝过 → 返回之前的 clone
+  if (map.has(obj)) return map.get(obj)
+
+  // 创建拷贝对象
+  const clone = Array.isArray(obj) ? [] : {}
+
+  // 记录映射关系
+  map.set(obj, clone)
+
+  // 递归拷贝属性
+  for (let key in obj) {
+    //hasOwnProperty可以确保只处理对象自身的属性，从而深拷贝时不会误拷贝原型链上的内容
+    if (obj.hasOwnProperty(key)) {
+      clone[key] = deepClone(obj[key], map)
+    }
+  }
+
+  return clone
 }
 ```
