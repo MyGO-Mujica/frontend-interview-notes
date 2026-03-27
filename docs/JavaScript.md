@@ -195,7 +195,7 @@ Object.defineProperty(obj, prop, descriptor)
 Object.defineProperty(obj, 'name', {
   value: 'anno',       // 该属性值的值
   writable: false,     // 是否可修改
-  enumerable: true,    // 是否可枚举（遍历），不可枚举属性无法通过 Object.keys 获取到
+  enumerable: true,    // 是否可枚举（遍历），不可枚举属性无法通过Object.keys获取到
   configurable: false  // 是否可删除 / 再配置
 })
 ```
