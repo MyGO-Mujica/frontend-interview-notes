@@ -90,12 +90,12 @@ const arr = new Array(100); arr.fill(0)
 - `toString()` → 转字符串
 
 ###### 1. Number 中最大数、最大安全整数、EPSILON 都是多少，原理是什么
-| 属性                      | 值          | 含义                              | 原理                                                         |
-| ------------------------- | ----------- | --------------------------------- | ------------------------------------------------------------ |
-| `Number.MAX_VALUE`        | ≈ 1.79e+308 | JS 能表示的 **最大有限数**        | JS 的 Number 是 **64 位浮点数（IEEE 754）**                  |
-| `Number.MAX_SAFE_INTEGER` | 2^53 - 1    | 可以被“精确表示”的最大整数        | JS 的 Number 只有 53 位有效精度（52 位尾数 + 1 位隐含位），所以最多能精确表示到 2⁵³−1 |
-| `Number.EPSILON`          | 2^-52       | 1 和比 1 大的最小浮点数之间的差值 | 尾数只有 52 位(小数点后最多 52 位)                           |
 
+| 属性                      | 值          | 含义                              | 原理                                                                                  |
+| ------------------------- | ----------- | --------------------------------- | ------------------------------------------------------------------------------------- |
+| `Number.MAX_VALUE`        | ≈ 1.79e+308 | JS 能表示的 **最大有限数**        | JS 的 Number 是 **64 位浮点数（IEEE 754）**                                           |
+| `Number.MAX_SAFE_INTEGER` | 2^53 - 1    | 可以被“精确表示”的最大整数        | JS 的 Number 只有 53 位有效精度（52 位尾数 + 1 位隐含位），所以最多能精确表示到 2⁵³−1 |
+| `Number.EPSILON`          | 2^-52       | 1 和比 1 大的最小浮点数之间的差值 | 尾数只有 52 位(小数点后最多 52 位)                                                    |
 
 ##### 2.**String（字符串）**
 
@@ -174,7 +174,7 @@ const arr = new Array(100); arr.fill(0)
 
 3️⃣ 原型相关
 
-- `hasOwnProperty()`→  方法返回一个布尔值，表示对象自有属性（而不是继承来的属性）中是否具有指定的属性
+- `hasOwnProperty()`→ 方法返回一个布尔值，表示对象自有属性（而不是继承来的属性）中是否具有指定的属性
 - `Object.create()`
 
 ###### 1. 简述 Object.defineProperty
@@ -390,33 +390,41 @@ move();               // [0, 0]
 > - `WeakMap`: 只能使用引用数据类型作为 key。弱引用，不在内部维护两个数组，可被垃圾回收，但因此无法被遍历！即没有与枚举相关的 API，如 `keys`、`values`、`entries` 等
 
 #### 9. 循环引用
+
 ##### 1. JS 如何检测到对象中有循环引用
+
 **循环引用**是指对象的某个属性，经过一系列引用，最终又指回它自己。
+
 ```
 const obj = {}
 obj.self = obj
 
 obj → obj
 ```
+
 📌 为什么这是问题？
 
 比如：
+
 ```
 JSON.stringify(obj)
 ```
+
 会直接报错：
+
 ```
 TypeError: Converting circular structure to JSON
 ```
- 因为：
+
+因为：
 
 程序在递归遍历
 永远走不出来（死循环）
 
-
 **检测对象中有循环引用思路**：可以通过DFS遍历对象，用 WeakSet 记录访问过的对象，如果再次访问同一个引用，就说明存在循环引用
 
-*手写代码*
+_手写代码_
+
 ```
 function hasCycle(obj) {
   const visited = new WeakSet()
@@ -437,13 +445,17 @@ function hasCycle(obj) {
   return dfs(obj)
 }
 ```
+
 ##### 2. JS 深克隆时如何处理循环引用 (深拷贝的实现)
+
 深克隆（deep clone）指的是 **复制一个对象及其所有子对象，使得原对象和新对象互不影响**。
 
 如果对象内部存在循环引用,直接递归拷贝就会无限调用而导致栈溢出。
 
 解决思路：
->深拷贝时，如果对象存在循环引用，递归会无限执行。解决方法是使用 WeakMap 记录已经拷贝过的对象，当再次遇到同一个对象时直接返回之前的拷贝结果，从而避免死循环。
+
+> 深拷贝时，如果对象存在循环引用，递归会无限执行。解决方法是使用 WeakMap 记录已经拷贝过的对象，当再次遇到同一个对象时直接返回之前的拷贝结果，从而避免死循环。
+
 ```
 function deepClone(obj, map = new WeakMap()) {
   // 基本类型直接返回
@@ -459,9 +471,11 @@ function deepClone(obj, map = new WeakMap()) {
   map.set(obj, clone)
 
   // 递归拷贝属性
-  Object.keys(obj).forEach(key => {
-    clone[key] = deepClone(obj[key], map)
-  })
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+        clone[key] = deepClone1(obj[key], map);
+    }
+}
 
   return clone
 }
