@@ -508,4 +508,14 @@ function deepClone(obj, map = new WeakMap()) {
 | 用户体验 | 更“懒”   | 更“实时” |
 
 它们的核心区别是：防抖关注“最后一次”，节流关注“执行频率”
+
+#### 2. bind 与 call/apply 的区别是什么
+
+- call / apply → 立即执行函数
+- bind → 返回一个新函数，不会立即执行
+
+call / apply 本质就是：
+
+>临时把函数挂到某个对象上执行一下
+>区别：call 是逐个传参，apply 是数组传参
  
