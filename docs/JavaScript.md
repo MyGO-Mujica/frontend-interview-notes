@@ -578,3 +578,7 @@ function myNew(fn, ...args) {
   return result instanceof Object ? result : obj
 }
 ```
+>new 的核心是构建一个基于原型链的实例对象。
+它通过将新对象的 `[[Prototype]]` 指向构造函数的 `prototype`，
+从而实现属性和方法的继承，同时通过 call/apply 绑定 this 执行初始化逻辑，
+最终返回构造函数返回的对象或默认实例。
