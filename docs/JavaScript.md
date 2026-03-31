@@ -634,15 +634,15 @@ function myNew(fn, ...args) {
   function Parent() {
     this.name = "parent"
   }
-
+  
   Parent.prototype.say = function () {
     console.log("hello")
   }
-
+  
   function Child() {}
-
+  
   Child.prototype = new Parent()
-
+  
   const c = new Child()
   c.say() // hello
   ```
@@ -659,50 +659,49 @@ function myNew(fn, ...args) {
   ❌ 问题
   - 1️⃣ 所有实例共享引用类型属性（会互相污染）
   - 2️⃣ 不能给 Parent 传参
-<br/>
 - 组合继承
   ✅ 写法
   ```
   function Parent(name) {
     this.name = name
   }
-
+  
   Parent.prototype.say = function () {
     console.log(this.name)
   }
-
+  
   function Child(name) {
     Parent.call(this, name) // 第一次调用
   }
-
+  
   Child.prototype = new Parent() // 第二次调用 ❗
   Child.prototype.constructor = Child
   ```
   ✅ 优点
   - ✔ 可以传参
   - ✔ 方法复用
-  <br/>
+  
 
   ❌ 缺点（重点）
   - Parent 被调用了两次 ❌
-<br>
+
 - 寄生组合继承
   ```
   function Parent(name) {
     this.name = name
   }
-
+  
   Parent.prototype.say = function () {
     console.log(this.name)
   }
-
+  
   function Child(name) {
     Parent.call(this, name) // 继承属性
   }
-
+  
   // ⭐ 核心：只继承原型
   Child.prototype = Object.create(Parent.prototype)
-
+  
   // ⭐ 修复 constructor
   Child.prototype.constructor = Child
   ```
@@ -710,7 +709,6 @@ function myNew(fn, ...args) {
   -  ✔ 只调用一次 Parent
   - ✔ 原型链干净
   - ✔ 性能更好
-<br>
 
 - ES6 class 继承（现代写法）
   ```
@@ -718,12 +716,12 @@ function myNew(fn, ...args) {
   constructor(name) {
     this.name = name
   }
-
+  
   say() {
     console.log(this.name)
     }
   }
-
+  
   class Child extends Parent {
     constructor(name) {
     super(name)
