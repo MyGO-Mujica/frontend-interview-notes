@@ -528,7 +528,8 @@ call / apply 本质就是：
 
 #### 3. JavaScript 原型链
 
-> JavaScript 中每个对象都有一个内部属性 `[[Prototype]]`，可以通过 ` __proto__ ` 访问。
+> 原型链的存在意义在于实现对象之间的属性共享和继承机制。
+>JavaScript 中每个对象都有一个内部属性 `[[Prototype]]`，可以通过 ` __proto__ ` 访问。
 > 当访问对象属性时，如果对象本身没有，就会沿着原型链向上查找，直到 Object.prototype 或 null 为止。
 > 这种通过原型逐级查找属性的机制，就叫原型链。
 
