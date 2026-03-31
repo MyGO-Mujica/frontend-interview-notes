@@ -731,6 +731,8 @@ function myNew(fn, ...args) {
    本质
    - extends = 建立原型链
    - super = 调用父类构造函数
+   - ES6 的 class 本质上是对 ES5 原型链继承的语法封装，尤其是 extends 实现的就是寄生组合继承。
+
 
 总结：
 >JavaScript 中继承的本质是通过原型链实现的,目的为让一个对象能访问另一个对象的属性和方法
