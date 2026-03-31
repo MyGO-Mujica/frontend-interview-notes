@@ -528,11 +528,11 @@ call / apply 本质就是：
 
 #### 3. JavaScript 原型链
 
-> JavaScript 中每个对象都有一个内部属性 [ [Prototype] ]，可以通过 ** proto ** 访问。
+> JavaScript 中每个对象都有一个内部属性 `[[Prototype]]`，可以通过 ` __proto__ ` 访问。
 > 当访问对象属性时，如果对象本身没有，就会沿着原型链向上查找，直到 Object.prototype 或 null 为止。
 > 这种通过原型逐级查找属性的机制，就叫原型链。
 
-| 维度           | prototype            | **proto**            |
+| 维度           | prototype            | **`__proto__` (`[[Prototype]]`)**            |
 | -------------- | -------------------- | -------------------- |
 | 本质           | 函数的属性           | 对象的属性           |
 | 作用           | 定义共享属性         | 指向原型对象         |
@@ -623,3 +623,119 @@ function myNew(fn, ...args) {
 > 它通过将新对象的 `[[Prototype]]` 指向构造函数的 `prototype`，
 > 从而实现属性和方法的继承，同时通过 call/apply 绑定 this 执行初始化逻辑，
 > 最终返回构造函数返回的对象或默认实例。
+
+##### 3. js 如何实现继承？
+本质：
+    让一个对象能访问另一个对象的属性和方法（通过**原型链**）
+- 原型链继承（理解本质）
+  ✅ 写法
+  ```
+  function Parent() {
+    this.name = "parent"
+  }
+
+  Parent.prototype.say = function () {
+    console.log("hello")
+  }
+
+  function Child() {}
+
+  Child.prototype = new Parent()
+
+  const c = new Child()
+  c.say() // hello
+  ```
+  🔥 原理
+  ```
+  c
+  ↓
+  Child.prototype（= new Parent()）
+  ↓
+  Parent.prototype
+  ↓
+  Object.prototype
+  ```
+  ❌ 问题
+  - 1️⃣ 所有实例共享引用类型属性（会互相污染）
+  - 2️⃣ 不能给 Parent 传参
+<br/>
+- 组合继承
+  ✅ 写法
+  ```
+  function Parent(name) {
+    this.name = name
+  }
+
+  Parent.prototype.say = function () {
+    console.log(this.name)
+  }
+
+  function Child(name) {
+    Parent.call(this, name) // 第一次调用
+  }
+
+  Child.prototype = new Parent() // 第二次调用 ❗
+  Child.prototype.constructor = Child
+  ```
+  ✅ 优点
+  - ✔ 可以传参
+  - ✔ 方法复用
+  <br/>
+
+  ❌ 缺点（重点）
+  - Parent 被调用了两次 ❌
+<br>
+- 寄生组合继承
+  ```
+  function Parent(name) {
+    this.name = name
+  }
+
+  Parent.prototype.say = function () {
+    console.log(this.name)
+  }
+
+  function Child(name) {
+    Parent.call(this, name) // 继承属性
+  }
+
+  // ⭐ 核心：只继承原型
+  Child.prototype = Object.create(Parent.prototype)
+
+  // ⭐ 修复 constructor
+  Child.prototype.constructor = Child
+  ```
+   为什么更好？
+  -  ✔ 只调用一次 Parent
+  - ✔ 原型链干净
+  - ✔ 性能更好
+<br>
+
+- ES6 class 继承（现代写法）
+  ```
+  class Parent {
+  constructor(name) {
+    this.name = name
+  }
+
+  say() {
+    console.log(this.name)
+    }
+  }
+
+  class Child extends Parent {
+    constructor(name) {
+    super(name)
+    }
+  } 
+  ```
+   本质
+   - extends = 建立原型链
+   - super = 调用父类构造函数
+
+总结：
+>JavaScript 中继承的本质是通过原型链实现的,目的为让一个对象能访问另一个对象的属性和方法
+常见方式有原型链继承、组合继承以及**寄生组合继承**。
+其中寄生组合继承是最推荐的实现方式，通过 Object.create 建立原型链，避免了多次调用父类构造函数的问题。
+在 ES6 中可以使用 class 和 extends 语法糖实现继承，但底层仍然是基于原型链。
+
