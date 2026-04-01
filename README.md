@@ -1,6 +1,6 @@
-# 前端面试八股文笔记 
+# 前端面试八股文笔记
 
-> 个人整理的前端面试高频知识点，持续更新中... 
+> 个人整理的前端面试高频知识点，持续更新中...
 
 ## 📚 目录结构
 
@@ -13,9 +13,15 @@ frontend-interview-notes/
 ```
 
 ## 📖 内容导航
+
 ### DOM
+
 - [DOM操作与优化](./docs/dom-operation-optimization.md)
 
 ### JavaScript
+
 - [JavaScript](./docs/JavaScript.md)
 
+### HTTP
+
+- [HTTP](./docs/HTTP.md)
