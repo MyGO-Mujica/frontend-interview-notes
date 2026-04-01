@@ -740,3 +740,80 @@ function myNew(fn, ...args) {
 其中寄生组合继承是最推荐的实现方式，通过 Object.create 建立原型链，避免了多次调用父类构造函数的问题。
 在 ES6 中可以使用 class 和 extends 语法糖实现继承，但底层仍然是基于原型链。
 
+#### 4. 事件循环（Event Loop）与 宏任务 / 微任务
+
+
+##### 1. 请简述一下 （事件循环）event loop
+
+**Event Loop（事件循环）是 JavaScript 处理异步任务的机制。**
+
+因为 JavaScript 是**单线程**的，为了避免阻塞，它把任务分为：
+
+- **同步任务（主线程执行）**
+- **异步任务（交给浏览器/Node 处理）**
+
+异步任务完成后会进入不同的队列，最终由 Event Loop 调度执行。
+
+执行流程是：
+
+1. 执行当前调用栈中的同步代码（Call Stack）
+2. 清空后，优先执行 **微任务队列（Microtask Queue）**
+3. 再执行一个 **宏任务（Macrotask）**
+4. 循环往复（这就是 Event Loop）
+
+![image](https://user-images.githubusercontent.com/19162008/109372242-850c0980-78e3-11eb-8fe6-ecb15fa5e480.png)
+
+**核心结构**
+
+你可以稍微展开一点，说出这几个关键词：
+
+1️⃣ 调用栈（Call Stack）
+
+- 执行同步代码
+- 先进后出（函数调用栈）
+
+------
+2️⃣ 微任务（Microtask）⭐重点
+
+常见：
+
+- `Promise.then`
+- `catch / finally`
+- `MutationObserver`
+- `queueMicrotask`
+
+👉 特点：**优先级高于宏任务**
+
+------
+
+3️⃣ 宏任务（Macrotask）
+
+常见：
+
+- `setTimeout`
+- `setInterval`
+- `setImmediate`（Node）
+- `I/O`
+
+
+
+
+
+
+
+**执行顺序**：
+
+> 同步 → 微任务 → 宏任务（循环执行）
+
+
+
+**总结：**
+
+>代码执行时，先进入调用栈执行同步代码；
+> 遇到异步任务，会交给 Web API 处理；
+> 当异步任务完成后，会被放入任务队列；
+> Event Loop 会在调用栈为空时：
+>
+>- 先清空所有微任务
+>- 再取一个宏任务执行
+>   然后不断循环。
