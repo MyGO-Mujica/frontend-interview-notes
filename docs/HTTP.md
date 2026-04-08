@@ -79,10 +79,11 @@ Cookie: xxx
 7. 浏览器解析与渲染（重点）
    1. 解析 HTML → DOM 树
    2. 解析 CSS → CSSOM 树
-   3. 合并 → Render Tree
+   3. 合并 → DOM + CSSOM 合并 生成 Render Tree
    4. 布局（Layout / Reflow）
-   5. 绘制（Paint）
-   6. 合成（Composite）
+   5. 分层（Layer）
+   6. 绘制（Paint）
+   7. 合成（Composite）
 
 8. JS 执行（阻塞点）
    注意：
