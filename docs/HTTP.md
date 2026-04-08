@@ -104,7 +104,7 @@ Cookie: xxx
 
 
 ##### 2. tcp为什么需要三次握手
-![https://images.openai.com/static-rsc-4/B__dNuT5i0CPMywcv7eztttzY5FENv6E0OaNFLoCMgI1Hps0OB8qlz6wAca6VsrIqA4462Ppfp1c7RKVeE0wHlWNn_Ri58wVPKvf3oMfBk7nhTrR8bDC8lNHyTP0CxSuxGMiZ13gVh_vzHwXDvkhWd6agzQkR_3X9-9m-FJeD4ourLoaDAne4lrODxlL7ep7?purpose=fullsize](https://images.openai.com/static-rsc-4/K6wAmvfPmJk4t6_AXbka8sRHSwZ-1QKE2guONxPXxAdkfs03SU6tCIjtKk1aiVwE0xuFxHlJgtrU9As9qtYiGnvXgdZsC9gQTZjY0uCa-vmehEtnDrRTHlxsskd_pzIRkyRNOpJYUCKA9gCFkCOFDcR7j9Ri3_LLs14rpUoY8Lg?purpose=inline)
+![三次握手示例](https://images.openai.com/static-rsc-4/K6wAmvfPmJk4t6_AXbka8sRHSwZ-1QKE2guONxPXxAdkfs03SU6tCIjtKk1aiVwE0xuFxHlJgtrU9As9qtYiGnvXgdZsC9gQTZjY0uCa-vmehEtnDrRTHlxsskd_pzIRkyRNOpJYUCKA9gCFkCOFDcR7j9Ri3_LLs14rpUoY8Lg?purpose=inline)
 
 
 
