@@ -896,5 +896,84 @@ function myNew(fn, ...args) {
 
 
 
-##### 2. 以下输出顺序多少（事件循环的应用）
+##### 2. 以下输出顺序多少?（事件循环的应用）
+
+```javascript
+setTimeout(() => console.log(0));
+new Promise((resolve) => {
+  console.log(1);
+  resolve(2);
+  console.log(3);
+}).then((o) => console.log(o));
+ 
+new Promise((resolve) => {
+  console.log(4);
+  resolve(5);
+})
+  .then((o) => console.log(o))
+  .then(() => console.log(6));
+```
+
+```
+1 3 4 2 5 6 0
+```
+
+
+
+```
+┌───────────────────────────┐
+│  执行同步代码             │
+└───────────┬───────────────┘
+            ↓
+┌───────────────────────────┐
+│  微任务队列全部清空       │ ← Promise.then、queueMicrotask
+└───────────┬───────────────┘
+            ↓
+┌───────────────────────────┐
+│  取一个宏任务执行         │ ← setTimeout、setInterval
+└───────────┬───────────────┘
+            ↓
+┌───────────────────────────┐
+│  微任务队列全部清空       │ ← 新产生的微任务
+└───────────┬───────────────┘
+            ↓
+          循环...
+```
+
+
+
+```javascript
+console.log('start')
+
+setTimeout(() => {
+  console.log('timeout1')
+
+  Promise.resolve().then(() => {
+    console.log('then1')
+  })
+}, 0)
+
+Promise.resolve().then(() => {
+  console.log('then2')
+
+  setTimeout(() => {
+    console.log('timeout2')
+  }, 0)
+})
+
+console.log('end')
+```
+
+```
+start
+end
+then2
+timeout1
+then1
+timeout2
+```
+
+**总结**
+
+>在 Event Loop 中，同步代码先执行，然后清空微任务队列；执行一个宏任务后，又会立即清空微任务队列。在执行过程中，无论是宏任务还是微任务，都可以继续产生新的微任务或宏任务，其中微任务会在当前轮立即执行，而宏任务会进入下一轮循环
 
