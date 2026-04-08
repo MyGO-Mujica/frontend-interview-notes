@@ -4,7 +4,7 @@
 
 #### 1. URL
 
-##### URL输入浏览器之后会发生什么？
+##### 1. URL输入浏览器之后会发生什么？
 
 整体流程：
 
@@ -101,3 +101,17 @@ Cookie: xxx
 **总结：**
 
 > 用户输入 URL 后，浏览器会先解析 URL，然后通过 DNS 解析获取服务器 IP，接着通过 TCP（三次握手）建立连接，如果是 HTTPS 还会进行 TLS 握手。连接建立后浏览器发送 HTTP 请求，服务器处理后返回响应。浏览器拿到 HTML 后会解析生成 DOM 树，同时解析 CSS 生成 CSSOM，再合成渲染树，经过布局和绘制最终展示页面。在这个过程中，JS 可能会阻塞解析，同时还涉及缓存、重定向和网络优化等机制。
+
+
+##### 2. tcp为什么需要三次握手
+![https://images.openai.com/static-rsc-4/B__dNuT5i0CPMywcv7eztttzY5FENv6E0OaNFLoCMgI1Hps0OB8qlz6wAca6VsrIqA4462Ppfp1c7RKVeE0wHlWNn_Ri58wVPKvf3oMfBk7nhTrR8bDC8lNHyTP0CxSuxGMiZ13gVh_vzHwXDvkhWd6agzQkR_3X9-9m-FJeD4ourLoaDAne4lrODxlL7ep7?purpose=fullsize](https://images.openai.com/static-rsc-4/K6wAmvfPmJk4t6_AXbka8sRHSwZ-1QKE2guONxPXxAdkfs03SU6tCIjtKk1aiVwE0xuFxHlJgtrU9As9qtYiGnvXgdZsC9gQTZjY0uCa-vmehEtnDrRTHlxsskd_pzIRkyRNOpJYUCKA9gCFkCOFDcR7j9Ri3_LLs14rpUoY8Lg?purpose=inline)
+
+
+
+
+**TCP 需要三次握手，是为了：**
+
+1. 确认双方的收发能力正常
+2. 同步双方的初始序列号（ISN）
+3. 避免历史连接（旧报文）干扰新连接
+
