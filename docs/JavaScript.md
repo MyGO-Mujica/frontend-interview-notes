@@ -471,10 +471,8 @@ function deepClone(obj, map = new WeakMap()) {
   map.set(obj, clone)
 
   // 递归拷贝属性
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-        clone[key] = deepClone1(obj[key], map);
-    }
+  for (const key of Object.keys(obj)) {
+      clone[key] = deepClone1(obj[key], map);
 }
 
   return clone
