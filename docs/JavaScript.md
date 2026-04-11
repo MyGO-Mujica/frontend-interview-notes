@@ -896,6 +896,7 @@ function myNew(fn, ...args) {
 
 ##### 2. 以下输出顺序多少?（事件循环的应用）
 
+###### 1.
 ```javascript
 setTimeout(() => console.log(0));
 new Promise((resolve) => {
@@ -939,7 +940,7 @@ new Promise((resolve) => {
 ```
 
 
-
+###### 2. 
 ```javascript
 console.log('start')
 
@@ -970,6 +971,22 @@ timeout1
 then1
 timeout2
 ```
+
+###### 3. 
+```
+setTimeout(() => console.log("A"));
+ 
+Promise.resolve().then(() => console.log("B"));
+ 
+console.log("C");
+```
+
+```
+C
+B
+A
+```
+
 
 **总结**
 
