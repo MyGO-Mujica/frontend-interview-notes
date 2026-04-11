@@ -987,6 +987,87 @@ B
 A
 ```
 
+###### 4.
+```
+setTimeout(() => {
+  console.log("A");
+  Promise.resolve().then(() => {
+    console.log("B");
+  });
+}, 1000);
+ 
+Promise.resolve().then(() => {
+  console.log("C");
+});
+ 
+new Promise((resolve) => {
+  console.log("D");
+  resolve("");
+}).then(() => {
+  console.log("E");
+});
+ 
+async function sum(a, b) {
+  console.log("F");
+}
+ 
+async function asyncSum(a, b) {
+  await Promise.resolve();
+  console.log("G");
+  return Promise.resolve(a + b);
+}
+ 
+sum(3, 4);
+asyncSum(3, 4);
+console.log("H");
+```
+```
+D
+F
+H
+C
+E
+G
+A
+B
+```
+1️⃣ Promise 构造函数是同步执行
+```
+(resolve) => {
+  console.log("D");
+  resolve("");
+}
+立即执行 → 直接输出：D
+```
+
+2️⃣ async function sum
+
+🔹 本质
+- async 函数 ≈ 返回 Promise 的函数
+内部没有 await → 全部同步执行
+
+3️⃣ 🚨重点：asyncSum
+```
+async function asyncSum(a, b) {
+  await Promise.resolve();
+  console.log("G");
+  return Promise.resolve(a + b);
+}
+```
+
+🔥 结论（必须记住）
+
+> await = Promise.then 的语法糖
+```
+await Promise.resolve();
+console.log("G");
+
+//等价于
+
+Promise.resolve().then(() => {
+  console.log("G");
+});
+```
 
 **总结**
 
