@@ -1120,7 +1120,37 @@ Promise.resolve()
 1. 第 1 个额外微任务（PromiseResolveThenableJob）：调用返回的 Promise 的 .then(resolve, reject)
 2. 第 2 个额外微任务：执行 resolve(4)，用拿到的值去 resolve 外层 Promise
 
-> 面试的时候只需要简单记住：如果resolve()的括号内的结果是一个promise的话，会多执行两个micro task
+类似题目：
+```
+new Promise((resolve) => {
+  let resolvedPromise = Promise.resolve();
+  resolve(resolvedPromise);
+}).then(() => {
+  console.log("resolvePromise resolved");
+});
+ 
+Promise.resolve()
+  .then(() => {
+    console.log("promise1");
+  })
+  .then(() => {
+    console.log("promise2");
+  })
+  .then(() => {
+    console.log("promise3");
+  });
+```
+输出结果：
+```
+promise1
+promise2
+resolvePromise resolved
+promise3
+```
+
+> 面试的时候只需要简单记住：如果resolve()的括号内的结果是一个promise 或 .then() 的回调中 return 了一个 Promise 实例，会多执行两个micro task
+
+
 
 **总结**
 
