@@ -1069,6 +1069,59 @@ Promise.resolve().then(() => {
 });
 ```
 
+###### 5.
+```
+Promise.resolve()
+  .then(() => {
+    console.log(0);
+    return Promise.resolve(4);
+  })
+  .then((res) => {
+    console.log(res);
+  });
+ 
+Promise.resolve()
+  .then(() => {
+    console.log(1);
+  })
+  .then(() => {
+    console.log(2);
+  })
+  .then(() => {
+    console.log(3);
+  })
+  .then(() => {
+    console.log(5);
+  })
+  .then(() => {
+    console.log(6);
+  });
+```
+
+
+
+```
+微任务队列变化：
+
+初始：        [A1, B1]
+执行A1(输出0)：[B1, PRTJ]          ← 产生第1个额外微任务
+执行B1(输出1)：[PRTJ, B2]
+执行PRTJ：     [B2, resolve4]      ← 产生第2个额外微任务
+执行B2(输出2)：[resolve4, B3]
+执行resolve4： [B3, A2]            ← A2 终于入队！
+执行B3(输出3)：[A2, B4]
+执行A2(输出4)：[B4]
+执行B4(输出5)：[B5]
+执行B5(输出6)：[]
+
+最终输出：0 → 1 → 2 → 3 → 4 → 5 → 6
+```
+**核心原理**：当 .then() 回调返回一个 Promise 时，根据 ECMA 规范会产生 2 个额外的微任务：
+1. 第 1 个额外微任务（PromiseResolveThenableJob）：调用返回的 Promise 的 .then(resolve, reject)
+2. 第 2 个额外微任务：执行 resolve(4)，用拿到的值去 resolve 外层 Promise
+
+> 面试的时候只需要简单记住：如果resolve()的括号内的结果是一个promise的话，会多执行两个micro task
+
 **总结**
 
 >在 Event Loop 中，同步代码先执行，然后清空微任务队列；执行一个宏任务后，又会立即清空微任务队列。在执行过程中，无论是宏任务还是微任务，都可以继续产生新的微任务或宏任务，其中微任务会在当前轮立即执行，而宏任务会进入下一轮循环
