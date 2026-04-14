@@ -1399,3 +1399,164 @@ for (var i = 0; i < 5; i++) {
 
 解决方法：
 用 let 替代 var，因为 let 有**块级作用域**，每次循环都会创建一个新的 i，每个 setTimeout 捕获的是各自的 i。
+
+#### 7. 什么是闭包？闭包的应用有哪些地方
+ 🔑 核心知识点总结
+**闭包**= 函数 + 函数能访问的外部作用域变量的组合
+```
+function outerFunction() {
+  let outerVariable = '我是一个外部变量'; // ← 这个变量被"封存"了
+ 
+  function innerFunction() {
+    console.log(outerVariable); // ← 内部函数持有对它的引用
+  }
+ 
+  return innerFunction; // 将内部函数返回
+}
+ 
+const myClosure = outerFunction(); // 执行outerFunction，它返回innerFunction
+myClosure(); // 输出: "我是一个外部变量"
+// outerFunction 已经执行完了，但 outerVariable 没有被销毁！
+```
+>outerFunction 执行完后，按理说 outerVariable 应该被垃圾回收，但因为 innerFunction 还持有对它的引用，所以它被保留在内存中 —— 这就是闭包的核心。
+**本质**：函数执行完后，其作用域本应被销毁，但如果内部函数**持有对外部变量的引用**，该作用域就会被保留在内存中。
+
+1. **数据私有化 / 封装**
+模拟私有变量，外部无法直接访问内部状态：
+```
+function createCounter() {
+  let count = 0; // 私有变量，外部无法直接访问
+
+  return {
+    increment() { count++; },
+    decrement() { count--; },
+    getCount()  { return count; }
+  };
+}
+
+const counter = createCounter();
+counter.increment();
+counter.increment();
+console.log(counter.getCount()); // 2
+console.log(counter.count);      // undefined ← 无法直接访问！
+```
+2. **防抖 / 节流（Debounce / Throttle）**
+两者都通过闭包保存**定时器引用**或**时间戳**来控制函数执行频率：
+防抖 —— 最后一次触发后才执行
+```
+function debounce(fn, delay) {
+  let timer = null; // 定时器被闭包保存，多次调用共享同一个 timer ✅
+
+  return function(...args) {
+    clearTimeout(timer);          // 每次触发先清掉上一个定时器
+    timer = setTimeout(() => {
+      fn.apply(this, args);       // delay 毫秒内没有新触发，才真正执行
+    }, delay);
+  };
+}
+
+// 搜索框输入：用户停止输入 500ms 后才发请求
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', debounce((e) => {
+  console.log('发起搜索:', e.target.value);
+}, 500));
+```
+
+节流 —— 固定时间间隔内只执行一次
+```
+function throttle(fn, interval) {
+  let lastTime = 0; // 上次执行时间被闭包保存 ✅
+
+  return function(...args) {
+    const now = Date.now();
+
+    if (now - lastTime >= interval) {
+      lastTime = now;             // 更新时间戳
+      fn.apply(this, args);       // 距离上次执行已超过间隔，允许执行
+    }
+  };
+}
+
+// 滚动事件：每 200ms 最多执行一次
+window.addEventListener('scroll', throttle(() => {
+  console.log('滚动位置:', window.scrollY);
+}, 200));
+```
+
+3. 函数柯里化
+函数柯里化（Currying）是一种将多个参数的函数转换为一系列接受单个参数的函数的过程。举个简单的例子，我们有一个原始函数add(a, b, c)，我们可以将它柯里化为addCurried(a)(b)(c)的形式
+```
+//柯里化前
+function add(a, b, c) {
+  return a + b + c;
+}
+console.log(add(1, 2, 3)); //6
+//柯里化后
+function addCurried1(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+//箭头函数简写
+const addCurried2 = (a) => (b) => (c) => a + b + c;
+console.log(addCurried1(1)(2)(3)); //6
+console.log(addCurried2(1)(2)(3)); //6
+```
+
+4. 函数工厂（批量生成函数）
+根据参数生成定制化函数：
+```
+function createMultiplier(multiplier) {
+  return (num) => num * multiplier; // multiplier 被闭包保存
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+```
+
+
+5.  缓存 / 记忆化（Memoization）
+将计算结果缓存，避免重复计算：
+```
+function createMemoize(fn) {
+  const cache = {}; // 缓存对象被闭包保存
+
+  return function(n) {
+    if (cache[n] !== undefined) {
+      console.log('从缓存获取');
+      return cache[n];
+    }
+    console.log('计算中...');
+    cache[n] = fn(n);
+    return cache[n];
+  };
+}
+
+// 模拟一个"慢计算"：计算平方
+const memoSquare = createMemoize((n) => n * n);
+
+memoSquare(4);  // 计算中...     → 16
+memoSquare(4);  // 从缓存获取   → 16 ✅
+memoSquare(5);  // 计算中...     → 25
+memoSquare(5);  // 从缓存获取   → 25 ✅
+
+第一次调用 memoSquare(4)  →  cache 里没有  →  计算并存入 cache
+第二次调用 memoSquare(4)  →  cache 里有了  →  直接返回，跳过计算
+```
+
+总结：
+>闭包就是一个函数能够记住并访问它定义时的作用域中的变量，即使这个函数在作用域外执行。简单说就是函数 + 它能访问的外部变量。
+>
+>正常情况下，一个函数执行完毕，内部变量就会被销毁。但如果内部有一个函数引用了这些变量，并且被返回到外部，那这些变量就不会被垃圾回收，会一直保留在内存中，这就形成了闭包。
+>
+>闭包在实际开发中有很多应用场景：
+第一个是数据私有化。我们可以用闭包模拟私有变量。
+第二个是函数工厂。利用闭包保存参数，批量生成定制化函数。
+第三个是缓存记忆化。在函数外层用闭包保存一个 cache 对象，每次执行前先查缓存，有就直接返回，没有才计算并存入缓存。这样相同的入参只计算一次，后续全部走缓存，性能提升很明显。
+第四个是柯里化。把一个多参数函数拆成多个单参数函数链式调用，每一层都用闭包把已传入的参数保存下来，等参数凑齐了才真正执行。实际业务中常用来固定某些通用参数，比如固定请求的 baseURL，或者固定权限校验的角色。
+第五个是防抖和节流，这是我觉得最典型的场景。防抖是用闭包保存一个 timer，每次触发先清掉上一个定时器再重新计时，只有用户停止操作后才真正执行，适合搜索框输入。节流是用闭包保存 lastTime，每次触发对比当前时间和上次执行时间的差值，超过间隔才允许执行，适合滚动监听。两者本质都是利用闭包跨调用共享同一份状态。
