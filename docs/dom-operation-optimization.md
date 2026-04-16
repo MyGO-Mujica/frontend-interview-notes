@@ -177,7 +177,7 @@ observer.observe(img)
 
  **推荐回答结构**：
 
-> localStorage生命周期是永久除非自主清除 sessionStorage生命周期为当前窗口或标签页，关闭窗口或标签页则会清除数据
+> localStorage生命周期是永久除非自主清除 sessionStorage生命周期为当前窗口或标签页，关闭窗口或标签页则会清除数据（刷新后还在）
 >
 > 他们均只能存储字符串类型的对象
 >
