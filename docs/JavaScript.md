@@ -1449,6 +1449,23 @@ foo()
 | 触发原因         | `let` 不允许重复声明 | 参数默认值引用自身触发暂时性死区 |
 | 外层变量有用吗？ | -                    | ❌ 被参数作用域遮蔽，无法访问     |
 
+###### 2. 关于词法作用域，判断以下代码输出
+
+```javascript
+var scope = "global scope";
+function checkScope() {
+  var scope = "local scope";
+  function f() {
+    return scope;
+  }
+  return f;
+}
+ 
+checkScope()();
+// local scope
+```
+
+> 由于 js 为词法作用域(Lexical Scope)，访问某个变量时，先在当前作用域中查找，如果查找不到则在嵌套作用域中查找，直到找到。如果找不到，则报 ReferenceError。
 
 ##### 3. 变量提升
 核心知识点总结:
