@@ -649,6 +649,33 @@ function myNew(fn, ...args) {
 > 从而实现属性和方法的继承，同时通过 call/apply 绑定 this 执行初始化逻辑，
 > 最终返回构造函数返回的对象或默认实例。
 
+###### 1. 关于 new，判断以下代码输出
+
+```javascript
+function F () {
+  this.a = 3;
+  return 
+    {a: 4}
+}
+ 
+const f = new F();
+console.log(f.a);
+```
+
+`new F()` 背后做了 4 件事：
+
+1. 创建一个新对象 `obj`
+2. `obj.__proto__ = F.prototype`
+3. 执行 `F.call(obj)`
+4. **根据返回值决定最终结果**
+
+```javaScript
+this.a = 3;       // 给默认的 this 赋值（但可能被丢弃）
+return { a: 4 };  // 返回的是一个对象！
+```
+
+
+
 ##### 3. js 如何实现继承？
 
 本质：
