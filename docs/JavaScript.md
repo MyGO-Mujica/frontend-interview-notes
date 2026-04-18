@@ -535,6 +535,17 @@ call / apply 本质就是：
 > 临时把函数挂到某个对象上执行一下
 > 区别：call 是逐个传参，apply 是数组传参
 
+##### 1. 关于 this 与包装对象，以下输出多少
+```
+function foo() {
+  console.log(this);
+}
+ 
+foo.call(3);
+//"use strict" 严格模式 → 3
+// 非严格模式           → Number {3}
+```
+
 #### 3. JavaScript 原型链
 
 > 原型链的存在意义在于实现对象之间的属性共享和继承机制。
