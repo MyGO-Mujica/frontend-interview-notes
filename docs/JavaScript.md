@@ -526,7 +526,14 @@ function deepClone(obj, map = new WeakMap()) {
 
 它们的核心区别是：防抖关注“最后一次”，节流关注“执行频率”
 
-#### 2. bind 与 call/apply 的区别是什么
+#### 2. this
+this 的核心思想
+
+this 不是在函数定义时决定的，而是在函数调用时决定的。
+
+> 简单记忆：谁调用，this 就指向谁。
+
+##### 1. bind 与 call/apply 的区别是什么
 
 `call / apply / bind` 都是用来改变函数执行时的 this 指向
 
@@ -538,15 +545,18 @@ call / apply 本质就是：
 > 临时把函数挂到某个对象上执行一下
 > 区别：call 是逐个传参，apply 是数组传参
 
-##### 1. 关于 this 与包装对象，以下输出多少
+
+
+
+##### 2. 关于 this 与包装对象，以下输出多少
 ```
 function foo() {
   console.log(this);
 }
  
 foo.call(3);
-//"use strict" 严格模式 → 3
-// 非严格模式           → Number {3}
+//"use strict" 严格模式 → 3 任意值
+// 非严格模式           → Number {3}  对象
 ```
 
 #### 3. JavaScript 原型链
