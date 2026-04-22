@@ -57,6 +57,18 @@ border-box  （怪异盒子模型）：width 包含 (content、padding、border)
 - `flex-direction` — 主轴方向
 - `justify-content` — 主轴对齐
 - `align-items` — 交叉轴对齐
+- `flex-wrap` - 自动换行
+- `flex: 1` - 平分剩余空间 `0` 最小化显示，不抢空间 `auto` 优先保留元素自身的宽度
+
+万能居中：
+```css
+/* 万能居中 */
+display: flex;
+justify-content: center;
+align-items: center;
+```
+`Flex` 布局中 `margin: auto` 会自动抢占所有剩余空间，把元素强行挤到正中间
+
 ![image-20260422213952352](C:\Users\11582\AppData\Roaming\Typora\typora-user-images\image-20260422213952352.png)
 ```css
 .parent {
