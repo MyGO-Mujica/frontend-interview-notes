@@ -79,7 +79,7 @@ Cookie: xxx
 7. 浏览器解析与渲染（重点）
    1. 解析 HTML → DOM 树
    2. 解析 CSS → CSSOM 树
-   3. 合并 → DOM + CSSOM 合并 生成 Render Tree
+   3. 合并 → DOM + CSSOM 合并 生成渲染树 Render Tree
    4. 布局（Layout / Reflow）
    5. 分层（Layer）
    6. 绘制（Paint）
@@ -114,4 +114,57 @@ Cookie: xxx
 1. 确认双方的收发能力正常
 2. 同步双方的初始序列号（ISN）
 3. 避免历史连接（旧报文）干扰新连接
+
+
+#### 2. 浏览器解析与渲染
+   1. 解析 HTML → DOM 树
+   2. 解析 CSS → CSSOM 树
+   3. 合并 → DOM + CSSOM 合并 生成渲染树 Render Tree
+   4. 布局（Layout / Reflow）
+   5. 分层（Layer）
+   6. 绘制（Paint）
+   7. 合成（Composite）
+
+
+- 渲染阻塞问题
+  - CSS 阻塞渲染：CSSOM 未构建完成前，页面不会渲染，会出现白屏；
+  - JS 阻塞 DOM 解析 & 渲染：JS 执行会暂停 HTML 解析，因为 JS 可修改 DOM/CSSOM；
+✅ 优化：给 script 加async/defer、将 script 放 body 底部。
+- 重排（Reflow） vs 重绘（Repaint）
+  - 重排：元素几何属性改变（宽高、位置、增删节点、窗口 resize）→ 触发完整渲染流程，性能消耗大；
+  - 重绘：仅样式改变（颜色、背景）→ 跳过布局，只重新绘制，消耗较小；
+  - 合成：transform/opacity → 跳过重排 + 重绘，仅合成图层，性能最优。
+- 减少重排重绘的优化手段
+  - 批量修改 DOM（离线操作 DOM，如先隐藏再修改）；
+  - 使用 transform/opacity 实现动画
+
+##### 1. 重排 vs 重绘
+**重绘性能远比重排好**，重排开销极大，是前端性能优化里最需要避免的操作。
+```
+HTML → 解析 DOM
+      ↓
+CSS  → 解析 CSSOM
+      ↓
+   合并 → Render Tree（渲染树）
+      ↓
+   Layout（布局/排版）← 这里产生"重排"
+      ↓
+   Paint（绘制）← 这里产生"重绘"
+      ↓
+   Composite（合成）
+      ↓
+   显示到屏幕
+```
+1. 重排（Reflow / Layout）
+浏览器重新计算元素的几何信息（位置、宽高、大小、布局结构），重新排布页面元素。
+2. 重绘（Repaint / Paint）
+元素几何信息不变，只重新绘制元素的视觉样式（颜色、背景、阴影等）。
+
+>重排（Reflow） 是指浏览器重新计算元素的几何属性，比如宽高、位置、margin 这些，然后重新生成渲染树和布局。它的代价最高，可能触发多个元素的重新计算,损耗大量性能。
+>
+>重绘（Repaint） 是指只改变元素的视觉样式，比如颜色、背景色、阴影这些，但不涉及布局变化。它的代价相对较低。
+
+优化重排：
+- CSS class 来批量改样式
+- 是优先用 transform 和 opacity 来做动画。
 
