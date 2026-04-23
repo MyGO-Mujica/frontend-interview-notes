@@ -99,11 +99,12 @@ const arr = new Array(100); arr.fill(0)
 
 ###### 2. 为何 0.1+0.2 不等于 0.3，应如何做相等比较
 0.1，0.2 表示为二进制会有精度的损失，比较时可引入一个很小的数值 `Number.EPSILON` 容忍误差，其值为 2^-52。
-```
+```javascript
 function equal(a, b) {
   return Math.abs(a - b) < Number.EPSILON;
 }
-```    |
+
+``` 
 
 
 ##### 2.**String（字符串）**
@@ -129,8 +130,9 @@ function equal(a, b) {
 1️⃣ 增删改查
 
 - `push()` / `pop()`
-- `shift()` / `unshift()`
-- `splice()`
+- `shift()`   - 删除数组第一个元素
+- `unshift()`- 向数组开头添加一个或多个元素
+- `splice()` -万能增删改，指定位置删除 / 插入元素
 
 2️⃣ 遍历类（非常重要）
 
@@ -151,6 +153,13 @@ function equal(a, b) {
 - `reverse()`
 - `flat()`
 - `join()` 数组 → 字符串
+- `slice` -不修改原数组
+
+总结
+1. 修改原数组：push/pop/unshift/shift/splice/sort/reverse
+2. 不修改原数组：slice/concat/join/map/filter/flat
+3. 高频必用：map、filter、reduce、forEach、find、includes
+4. 判断数组：Array.isArray()
 
 ###### ① map 和 forEach 区别
 
@@ -233,7 +242,7 @@ Object.defineProperty(obj, 'name', {
 
 > _Object.defineProperty_ 中的选项 enumerable 可定义属性是否可枚举
 
-##### **5.Promise（异步核心**）
+##### 5.Promise（异步核心）
 
 1️⃣ 实例方法
 
