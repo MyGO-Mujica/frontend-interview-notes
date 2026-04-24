@@ -3,6 +3,7 @@
 ### 常见面试问题
 
 #### 1. diff算法
+
 核心知识点总结：
 React 的 Diff 算法用来对比新旧虚拟 DOM，找出最小化的 DOM 操作。key 是帮助 React 识别列表元素身份的唯一标识，让 Diff 算法能准确复用节点，避免不必要的销毁和重建。
 
@@ -15,17 +16,20 @@ key 的本质：
 > React Diff 算法基于三大假设、三层递进对比：
 >
 > 三大假设（性能基础）：
+>
 > 1. 不同类型的节点产生不同的树，直接替换无需深入对比
 > 2. 同层级节点变化最频繁，跨层级变化极少
 > 3. 开发者通过 key 标识哪些子节点在不同渲染中保持稳定
 >
 > 三层对比：
+>
 > 1. Tree Diff：只对比同层，跨层直接销毁重建
 > 2. Component Diff：同类型组件对比 props，不同类型直接替换
 > 3. Element Diff：同层子节点通过 key 建立映射，精准复用移动
 
 第一层：Tree Diff
 原则：只对比同层，跨层直接替换
+
 ```javascript
 // 旧树
 <div>
@@ -43,8 +47,10 @@ key 的本质：
 // 位置0: <A /> vs <B /> → 类型不同 → 删除A，创建B
 // 位置1: <B /> vs <C /> → 类型不同 → 删除B，创建C
 ```
+
 第二层：Component Diff
 原则：同类型对比 props，不同类型直接替换
+
 ```javascript
 // ✅ 同类型组件 → 复用实例，只更新 props
 // 旧
@@ -63,9 +69,11 @@ key 的本质：
 // 2. AdminCard 挂载，触发 componentDidMount
 // 3. 原来的状态全部丢失！
 ```
+
 第三层：Element Diff（最重要）
 这是 key 发挥作用的核心场景
 有 key：建立身份映射，精准复用
+
 ```javascript
 // 旧列表
 <ul>
@@ -94,17 +102,20 @@ key 的本质：
 ```
 
 总结：
+
 > React 的 diff 算法是一种基于假设条件的启发式算法：不同类型节点直接替换、只做同层比较，并结合 key 优化列表 diff，从而将复杂度从 O(n³) 降到 O(n)，在保证性能的同时实现高效更新。
 
 - 第一大策略：只对同层级DOM 节点进行对比，绝不跨层级对比
-简单说，Diff 算法会把 DOM 树按层级拆分，只对比同一父节点下的子节点，完全不考虑跨父节点的节点移动。采用原因：前端实际开发里，DOM 节点跨层级移动的场景极少，几乎都是同级的增、删、改。如果做全树递归跨层级对比，计算量会爆炸式增长；放弃跨层级对比，是用极小的场景牺牲，换来了最核心的性能减负。
+  简单说，Diff 算法会把 DOM 树按层级拆分，只对比同一父节点下的子节点，完全不考虑跨父节点的节点移动。采用原因：前端实际开发里，DOM 节点跨层级移动的场景极少，几乎都是同级的增、删、改。如果做全树递归跨层级对比，计算量会爆炸式增长；放弃跨层级对比，是用极小的场景牺牲，换来了最核心的性能减负。
 - 第二大策略：不同类型的节点，直接销毁旧树、新建新树，不做复用对比
-比如 DOM 标签从`<div>`改成`<p>`，或组件从 Class 组件换成 Function 组件，Diff 会直接卸载旧节点、挂载新节点，不会再去对比内部子节点。采用原因：不同类型的节点 / 组件，渲染结构、样式、逻辑差异极大，继续深度对比复用的成本，远高于直接重建新节点。这种 “一刀切” 的方式，能避免无意义的对比开销，反而更高效。
+  比如 DOM 标签从`<div>`改成`<p>`，或组件从 Class 组件换成 Function 组件，Diff 会直接卸载旧节点、挂载新节点，不会再去对比内部子节点。采用原因：不同类型的节点 / 组件，渲染结构、样式、逻辑差异极大，继续深度对比复用的成本，远高于直接重建新节点。这种 “一刀切” 的方式，能避免无意义的对比开销，反而更高效。
 - 第三大策略：列表节点通过唯一 key，实现精准节点匹配与复用
-渲染列表时，给每个子节点绑定稳定、唯一的 key，Diff 算法会通过 key 匹配新旧列表的节点，而非默认按索引对比。采用原因：不加 key 时，列表增删会导致节点按索引错位复用，既会引发渲染 bug，又会大量重复创建 / 销毁 DOM；唯一 key 能让算法快速定位对应节点，直接复用 DOM 元素，大幅减少长列表的渲染损耗，保证列表更新的性能与正确性。
+  渲染列表时，给每个子节点绑定稳定、唯一的 key，Diff 算法会通过 key 匹配新旧列表的节点，而非默认按索引对比。采用原因：不加 key 时，列表增删会导致节点按索引错位复用，既会引发渲染 bug，又会大量重复创建 / 销毁 DOM；唯一 key 能让算法快速定位对应节点，直接复用 DOM 元素，大幅减少长列表的渲染损耗，保证列表更新的性能与正确性。
 
 #### 2. React Hook 的核心机制
+
 React Hook 本质上是一套基于**链表结构**的状态管理机制。每个组件在底层维护着一个 Hook 链表，每次渲染时 React 会按照顺序依次读取这个链表中的节点。让函数组件也能使用 state、生命周期、上下文 等功能，避免类组件的复杂性和逻辑分散问题。
+
 1. 只在组件顶层调用，不能在循环、条件或嵌套函数中调用。
 2. 只在 React 函数组件或自定义 Hook 中调用。
 
@@ -127,21 +138,15 @@ React
 - 将共享 state 提升到最近公共父组件
 - 通过 props 下发数据和回调
 
-
-
 3. Context（跨层级）
 
 - createContext + Provider + useContext
 - 适合主题、语言、用户信息等全局数据
 - 缺点：value 变化会导致所有消费组件重渲染
 
-
-
 4. 状态管理库
 
 - Zustand：轻量，hooks 风格，当下最流行
-
-
 
 Vue 3
 
@@ -150,37 +155,27 @@ Vue 3
 - 父传子：defineProps
 - 子传父：defineEmits → emit('event', data)
 
-
-
 2. v-model（父子双向）
 
 - 本质是 modelValue prop + update:modelValue emit 的语法糖
 - Vue3 支持多个 v-model：v-model:title、v-model:content
 
-
-
 3. provide / inject（跨层级）
 
 - 先 provide('key', value)，后代 inject('key')
 - 可配合 ref / reactive 保持响应式
-- 
-
 
 5. Pinia（状态管理）
 
 - 替代 Vuex，更轻量，天然支持 Composition API
 - 适合全局共享状态
 
-
-
 6. defineExpose（子暴露给父）
 
 - 配合 ref 获取子组件实例
 - 子组件用 defineExpose({ method, data }) 显式暴露
 
-
-
- 横向对比
+横向对比
 
 | 场景       | Vue 3              | React                            |
 | ---------- | ------------------ | -------------------------------- |
@@ -188,29 +183,169 @@ Vue 3
 | 子传父     | emits              | 回调函数 props                   |
 | 双向绑定   | v-model            | 受控组件 + onChange              |
 | 跨层级     | provide/inject     | Context                          |
-| 兄弟通信   | mitt / Pinia       | 状态提升 / Zustand               |
+| 兄弟通信   | mitt / Pinia       | 状态提升 / Zustand (状态管理库)  |
 | 父调子方法 | defineExpose + ref | forwardRef + useImperativeHandle |
 | 全局状态   | Pinia              | Zustand / Redux                  |
 
->组件通信我分场景来说：
+> 组件通信我分场景来说：
 >
->**父子通信**，Vue3 用 `defineProps` 接收数据，`defineEmits` 向上触发事件；React >用 props 传数据，传回调函数实现子传父，思路一致。
+> **父子通信**，Vue3 用 `defineProps` 接收数据，`defineEmits` 向上触发事件；React 用 props 传数据，传回调函数实现子传父，思路一致。
 >
->**双向绑定**，Vue3 的 `v-model` 是语法糖，本质是 `modelValue` + `update:modelValue`，还支持多个 v-model 绑不同字段；React 没有这个，靠受控组件加 >onChange 自己实现。
+> **双向绑定**，Vue3 的 `v-model` 是语法糖，本质是 `modelValue` + `update:modelValue`，还支持多个 v-model 绑不同字段；React 没有这个，靠受控组件加 onChange 自己实现。
 >
->**跨层级**，Vue3 用 `provide / inject`，配合 ref 可以保持响应式；React 用 `Context`，但要注意 value 变化会触发所有消费组件重渲染，可以用 `memo` 或拆分 Context 来优化。
+> **跨层级**，Vue3 用 `provide / inject`，配合 ref 可以保持响应式；React 用 `Context`，但要注意 value 变化会触发所有消费组件重渲染，可以用 `memo` 或拆分 Context 来优化。
 >
->**兄弟或任意组件**，Vue3 推荐用 `mitt` 事件总线，因为 Vue3 把全局事件总线移除了；React 可以做状态提升，或者直接上状态管理库。
+> **兄弟或任意组件**，Vue3 推荐用 `mitt` 事件总线，因为 Vue3 把全局事件总线移除了；React 可以做状态提升，或者直接上状态管理库。
 >
->**全局状态管理**，Vue3 用 Pinia，比 Vuex 更轻量，API 更友好；React 现在主流用 Zustand，够轻量，hooks 风格，大型项目才考虑 Redux Toolkit。
+> **全局状态管理**，Vue3 用 Pinia，比 Vuex 更轻量，API 更友好；React 现在主流用 Zustand，够轻量，hooks 风格，大型项目才考虑 Redux Toolkit。
 >
->**父调子方法**，Vue3 子组件用 `defineExpose` 显式暴露方法，父组件拿 ref 调用；React 用 `forwardRef` 配合 `useImperativeHandle` 实现同样效果。
+> **父调子方法**，Vue3 子组件用 `defineExpose` 显式暴露方法，父组件拿 ref 调用；React 用 `forwardRef` 配合 `useImperativeHandle` 实现同样效果。
 
 #### 4. 虚拟DOM对性能的影响
->虚拟 DOM 对性能的影响是双面的，不能简单说它"提升性能"。
+
+> 虚拟 DOM 对性能的影响是双面的，不能简单说它"提升性能"。
 >
->**好的一面是**，它把多次状态变化合并成一次 DOM 更新，减少了浏览器的重排重绘次数。而且开发者只需要关心数据，框架自动处理 DOM 操作，降低了出错概率。
+> **好的一面是**，它把多次状态变化合并成一次 DOM 更新，减少了浏览器的重排重绘次数。而且开发者只需要关心数据，框架自动处理 DOM 操作，降低了出错概率。
 >
->**但它本身是有开销的**，首次渲染要构建完整的虚拟 DOM 树，比直接操作 DOM 慢；每次更新要创建新的 vnode 对象再做 Diff 计算，这些都是纯 JS 的运行成本。所以在极致性能场景下，手动操作 DOM 反而更快。
+> **但它本身是有开销的**，首次渲染要构建完整的虚拟 DOM 树，比直接操作 DOM 慢；每次更新要创建新的 vnode 对象再做 Diff 计算，这些都是纯 JS 的运行成本。所以在极致性能场景下，手动操作 DOM 反而更快。
 >
->**Diff 算法**是虚拟 DOM 的核心，主要有三个策略：只做同层对比把复杂度降到 O(n)；类型不同直接销毁重建；用 key 来准确识别节点身份，所以列表渲染一定要用唯一稳定的 id 做 key，不能用 index，因为增删元素时 index 会变，导致节点被错误复用。
+> **Diff 算法**是虚拟 DOM 的核心，主要有三个策略：只做同层对比把复杂度降到 O(n)；类型不同直接销毁重建；用 key 来准确识别节点身份，所以列表渲染一定要用唯一稳定的 id 做 key，不能用 index，因为增删元素时 index 会变，导致节点被错误复用。
+
+#### 5. React有哪几种钩子
+
+1. State 相关
+   `useState`
+
+- 管理组件本地状态
+- 返回 `[state, setState]`
+
+2. 副作用相关
+   `useEffect`
+
+- 处理副作用：请求、订阅、手动操作 DOM
+- 依赖数组控制执行时机
+- 返回 cleanup 函数处理卸载逻辑
+
+3. 性能优化相关
+   `useMemo`
+
+- 缓存计算结果，依赖不变则不重新计算
+
+`useCallback`
+
+- 缓存函数引用，依赖不变则返回同一个函数
+- 配合 `React.memo` 避免子组件不必要重渲染
+
+4. Ref 相关
+   `useRef`
+
+- 存储不触发渲染的可变值
+- 访问 DOM 节点
+- 保存跨渲染周期的值（如 timer id）
+
+5. Context 相关
+   `useContext`
+
+- 读取最近的 Context Provider 的值
+- 值变化时所有消费组件重渲染
+
+> React 的 hook 我按用途分几类来说：
+> 状态类，最常用的是 useState 管理本地状态；
+> 副作用类，useEffect 最常用，处理请求、订阅、定时器等；
+> 性能优化类，useMemo 缓存计算结果，useCallback 缓存函数引用，两者配合 React.memo 避免子组件不必要重渲染。
+> Ref 类，useRef 可以访问 DOM，也可以保存不触发渲染的可变值，比如 timer id；
+> Context 类，useContext 读取最近的 Provider 值，但要注意 value 变化会导致所有消费组件重渲染.
+
+##### 1. useContext会出现什么问题
+核心问题：性能问题 —— 不必要的**重渲染**
+只要 Context 的 value 变化，所有调用了 `useContext` 的组件**都会重渲染**，无论它实际用到的字段有没有变。
+```javascript
+const Context = createContext()
+
+function Parent() {
+  const [user, setUser] = useState({ name: 'Tom', age: 18 })
+  
+  return (
+    <Context.Provider value={{ user, setUser }}>
+      <ChildA /> {/* 只用了 user.name */}
+      <ChildB /> {/* 只用了 user.age */}
+    </Context.Provider>
+  )
+}
+
+// age 变化时，ChildA 也会重渲染 ❌
+```
+解决方案
+1. 拆分 Context（最推荐）
+```js
+// 把频繁变化和不常变化的拆开
+<UserContext.Provider value={user}>
+  <ActionsContext.Provider value={actions}>
+    ...
+  </ActionsContext.Provider>
+</UserContext.Provider>
+```
+2. 配合 `memo`
+```js
+// 需要配合 useMemo 稳定 value 引用
+const value = useMemo(() => ({ user, setUser }), [user])
+```
+3. 使用状态管理库代替
+
+>useContext 最主要的问题是性能，只要 Provider 的 value 变化，所有使用了这个 Context 的组件都会重渲染，不管它实际用到的字段有没有变。
+另外如果 value 直接传对象字面量，每次父组件渲染都会创建新引用，即使数据没变也会触发重渲染。
+解决办法有三个：一是按职责拆分 Context，把频繁变化的和稳定的分开；二是配合 useMemo 稳定 value 引用；三是状态量大的场景直接换 Zustand
+
+
+##### 2. 自定义hook
+
+📚 核心知识点
+什么是自定义 Hook?
+
+- 以 use 开头的普通 JS 函数
+- 内部可以调用其他 Hook
+- 本质是**逻辑复用**，不是 UI 复用（UI 复用用组件）
+- 每次调用都有**独立的状态**，互不影响
+
+> 自定义 Hook 是以 use 开头的函数，内部可以调用 React 内置 Hook，核心目的是逻辑复用。
+> 和组件的区别是：组件复用 UI + 逻辑，自定义 Hook 只复用逻辑，不渲染 DOM。和普通函数的区别是：它可以调用 Hook，有独立的状态。
+
+#### 6. 在React中如何进行性能优化？
+📚 核心知识点
+1. 减少不必要的重渲染
+`React.memo`
+```js
+// 父组件重渲染时，props 没变则子组件跳过渲染
+const Child = React.memo(({ name }) => <div>{name}</div>)
+```
+
+`useMemo` / `useCallback`
+```js
+// 稳定对象引用，配合 memo 使用才有意义
+const options = useMemo(() => ({ color: 'red' }), [])
+const handleClick = useCallback(() => doSth(), [])
+```
+- ⚠️ memo + useCallback / useMemo 是配套的，单独用 memo 但 props 引用每次都变，等于没用
+
+2. 状态设计
+避免不必要的 state
+
+3. Context 优化
+- 拆分 Context，稳定的和频繁变化的分开
+- value 用 useMemo 稳定引用
+- 复杂场景用 Zustand 替代
+
+4. 列表优化
+- key 使用稳定唯一的 id
+- 虚拟列表
+
+5. 其他
+- 防抖/节流：频繁触发的事件（搜索、resize、scroll）
+- 图片懒加载：loading="lazy" 或 IntersectionObserver
+
+>React 性能优化我从几个角度来说：
+减少重渲染，用 React.memo 包裹子组件，配合 useCallback 和 useMemo 稳定 props 引用，三者是配套的，单独用 memo 但 props 引用每次都变等于没用。
+状态设计，避免不必要的 state。
+列表优化，key 要用稳定唯一的 id，不能用 index；长列表用 react-window 做虚拟化，只渲染可视区域的节点。
+Context 的话，高频更新的数据不要放 Context，要拆分、稳定 value 引用，复杂场景直接换 Zustand 。
+其他还可以进行防抖或节流来控制频繁出发的事件，用图片懒加载来优化
