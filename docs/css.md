@@ -210,7 +210,7 @@ $color: red;
 ```
 
 5. Vue Scoped（框架内置）
-   Vue 原生支持，加一个 scoped 属性搞定
+   Vue 原生支持，加一个 scoped(范围) 属性搞定
 
 ```css
 <template>
