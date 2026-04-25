@@ -1767,6 +1767,29 @@ typeof new Boolean(false)   // 'object' ← 证明它是对象不是原始值
 >💡 口诀：new 一下就变成对象，对象转布尔值永远是 true，内容是什么无所谓。
 ```
 
+##### 3. 如何区分null 和 undefined
+① 严格相等（===）—— 最直接
+```js
+let a = null;
+let b = undefined;
+
+a === null;        // true
+b === undefined;   // true
+a === undefined;   // false
+b === null;        // false
+```
+② typeof 操作符 —— 注意经典陷阱
+```js
+typeof null;        // "object"   (历史遗留bug)
+typeof undefined;   // "undefined"
+```
+③ Object.prototype.toString.call() —— 精确类型标签
+```js
+Object.prototype.toString.call(null);        // "[object Null]"
+Object.prototype.toString.call(undefined);   // "[object Undefined]"
+```
+
+
 #### 9. 虚拟列表
 >虚拟列表是一种长列表性能优化技术。核心问题是，如果直接渲染上万条数据，会创建大量 DOM 节点，导致首次渲染卡顿、内存占用高、滚动掉帧。
 >
