@@ -183,7 +183,7 @@ Vue 3
 | 子传父     | emits              | 回调函数 props                   |
 | 双向绑定   | v-model            | 受控组件 + onChange              |
 | 跨层级     | provide/inject     | Context                          |
-| 兄弟通信   | mitt / Pinia       | 状态提升 / Zustand (状态管理库)  |
+| 兄弟通信   | mitt / Pinia       | 状态提升 / Zustand (状态管理库) /  父组件中转 |
 | 父调子方法 | defineExpose + ref | forwardRef + useImperativeHandle |
 | 全局状态   | Pinia              | Zustand / Redux                  |
 
@@ -349,3 +349,48 @@ const handleClick = useCallback(() => doSth(), [])
 列表优化，key 要用稳定唯一的 id，不能用 index；长列表用 react-window 做虚拟化，只渲染可视区域的节点。
 Context 的话，高频更新的数据不要放 Context，要拆分、稳定 value 引用，复杂场景直接换 Zustand 。
 其他还可以进行防抖或节流来控制频繁出发的事件，用图片懒加载来优化
+
+
+#### 7. React组件生命周期
+**📚 核心知识点**
+类组件生命周期（三个阶段）
+1. 挂载阶段
+- `constructor`：初始化 `state`
+- `render`：返回 JSX
+- `componentDidMount`：DOM 已挂载，适合发请求、订阅
+
+2. 更新阶段
+- `getDerivedStateFromProps`：`props` 变化时同步到 state（少用）
+- `shouldComponentUpdate`：返回 false 阻止重渲染，性能优化用
+- `render`
+- `componentDidUpdate`：更新后操作 DOM，注意要加条件避免死循环
+
+3. 卸载阶段
+- `componentWillUnmount`：清除定时器、取消订阅
+
+函数组件生命周期（Hooks 实现）
+函数组件无原生生命周期，通过 Hooks 模拟：
+1 挂载阶段
+```jsx
+// 仅挂载执行一次
+useEffect(() => {
+  // 接口请求、初始化操作
+}, [])
+```
+
+2 更新阶段
+```jsx
+// 依赖项变化时触发更新
+useEffect(() => {
+  // 监听 count / props 变化
+}, [count, props])
+```
+
+3 卸载阶段
+```jsx
+useEffect(() => {
+  return () => {
+    // 清除定时器、解绑事件（卸载时执行）
+  }
+}, [])
+```
