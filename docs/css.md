@@ -250,3 +250,37 @@ $color: red;
 ① px 绝对固定，适合固定样式；
 ② em 相对父级，嵌套容易错乱；
 ③ rem 相对根标签，是移动端响应式布局首选单位。
+
+#### 7. CSS BFC原理
+📚 核心知识点
+什么是 BFC？
+- 一块独立的渲染区域，内部元素的布局不会影响外部，外部也不会影响内部
+------
+如何触发 BFC
+- `overflow:` `hidden` / `auto` / `scroll`（最常用）
+- `isplay:` `flex` / `grid` / `inline-block`
+- `osition: absolute` / `fixed`
+- `loat: left` / `right`
+-------
+BFC 能解决什么问题
+1. 清除浮动（父元素高度塌陷）
+```js
+/* 子元素浮动，父元素高度为 0 */
+.parent {
+  overflow: hidden; /* 触发 BFC，父元素能包住浮动子元素 */
+}
+```
+2. 阻止 margin 塌陷
+- 父子元素 margin-top 会合并 
+
+3.  阻止被浮动元素覆盖
+```js
+/* 左边浮动，右边触发 BFC，实现两栏布局 */
+.right {
+  overflow: hidden;
+}
+```
+
+>BFC 是块级格式化上下文，可以理解为一块独立的渲染区域，内外布局互不影响。
+触发方式最常用的是 overflow: hidden，另外 display: flex、position: absolute 也会触发。
+主要用来解决三个问题：一是子元素浮动导致父元素高度塌陷，给父元素触发 BFC 就能包住浮动子元素；二是父子元素 margin 合并问题，触发 BFC 可以隔离 margin；三是实现两栏布局，右侧触发 BFC 就不会被左侧浮动元素覆盖。
