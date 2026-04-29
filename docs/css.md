@@ -258,9 +258,9 @@ $color: red;
 ------
 如何触发 BFC
 - `overflow:` `hidden` / `auto` / `scroll`（最常用）
-- `isplay:` `flex` / `grid` / `inline-block`
-- `osition: absolute` / `fixed`
-- `loat: left` / `right`
+- `display:` `flex` / `grid` / `inline-block`
+- `position: absolute` / `fixed`
+- `float: left` / `right`
 -------
 BFC 能解决什么问题
 1. 清除浮动（父元素高度塌陷）
