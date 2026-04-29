@@ -573,6 +573,60 @@ foo.call(3);
 // 非严格模式           → Number {3}  对象
 ```
 
+##### 3. 箭头函数和普通函数的区别
+📚 核心知识点
+1. this 指向不同
+```js
+// 普通函数：this 指向调用者，运行时决定
+const obj = {
+  name: 'Tom',
+  say: function() {
+    console.log(this.name) // 'Tom' ✅
+  }
+}
+
+// 箭头函数：this 继承定义时外层作用域，固定不变
+const obj2 = {
+  name: 'Tom',
+  say: () => {
+    console.log(this.name) // undefined ❌ this 是外层的 window, window 没有name属性
+  }
+}
+```
+
+2. 不能作为构造函数
+```js
+// ❌ 箭头函数不能 new
+const Person = (name) => { this.name = name }
+new Person('Tom') // TypeError
+```
+
+3. 没有 arguments 对象
+```js
+function fn() {
+  console.log(arguments) // [1, 2, 3] ✅
+}
+
+const fn2 = () => {
+  console.log(arguments) // ReferenceError ❌
+  // 用 ...args 代替
+}
+```
+什么是 arguments
+- 普通函数内部自动存在的类数组对象
+- 包含函数调用时传入的所有参数，不管函数有没有定义形参
+- 现在用 ...args 代替
+
+4. 没有 prototype
+```js
+const fn = () => {}
+console.log(fn.prototype) // undefined
+```
+
+>最核心的区别是 this 指向。普通函数的 this 在运行时决定，指向调用它的对象；箭头函数没有自己的 this，继承定义时外层作用域的 this，且固定不变，所以在回调函数里用箭头函数可以避免 this 丢失的问题。
+另外箭头函数不能作为构造函数，不能 new；没有 arguments 对象，需要用剩余参数 ...args 代替；也没有 prototype 属性。
+
+
 #### 3. JavaScript 原型链
 
 > 原型链的存在意义在于实现对象之间的属性共享和继承机制。
