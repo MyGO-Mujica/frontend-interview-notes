@@ -14,6 +14,32 @@
 - symbol
 - bool
 
+##### 1. symbol使用场景
+每个 Symbol 值都是**唯一**的，不会重复
+使用场景
+- 对象属性避免命名冲突（最常用）
+```js
+
+const user = {
+  id: 1,
+  name: 'Tom'
+}
+
+user.id = 'red-id'  // ❌ 把小明的 id 覆盖了
+
+const id = Symbol('id')
+user[id] = 'red-id'  // ✅ 与 id 共存，互不影响
+/**const user = {
+  id: 1,
+  name: 'Tom'
+  [id]: red-id  // 不会和普通 id 属性冲突
+}
+**/
+console.log(user.id)      // 1     ← 小明的，没变
+console.log(user[id])  // 'red-id' ← 小红的
+
+```
+
 #### 2.数组
 
 ##### 1. 在 js 中如何把类数组转化为数组
