@@ -310,6 +310,38 @@ const value = useMemo(() => ({ user, setUser }), [user])
 > 自定义 Hook 是以 use 开头的函数，内部可以调用 React 内置 Hook，核心目的是逻辑复用。
 > 和组件的区别是：组件复用 UI + 逻辑，自定义 Hook 只复用逻辑，不渲染 DOM。和普通函数的区别是：它可以调用 Hook，有独立的状态。
 
+##### 3. useEffect，第二个参数传空或者不传有什么区别
+```jsx
+// 不传：每次组件渲染后都执行
+useEffect(() => {
+  console.log('每次渲染都执行')
+})
+
+// 传空数组：只在组件挂载时执行一次
+useEffect(() => {
+  console.log('只执行一次')
+}, [])
+
+```
+
+##### 4. useEffect可以返回一个清理函数，这个清理函数的执行时间是什么时候
+1. 组件卸载时
+```jsx
+useEffect(() => {
+  const timer = setInterval(() => {}, 1000)
+  return () => clearInterval(timer) // 组件销毁时执行
+}, [])
+```
+2.  依赖变化时，下一次 effect 执行前
+```jsx
+useEffect(() => {
+  console.log('effect 执行', url)
+  return () => {
+    console.log('cleanup 执行', url) // 先清理上一次，再执行新的
+  }
+}, [url])
+```
+
 #### 6. 在React中如何进行性能优化？
 📚 核心知识点
 1. 减少不必要的重渲染
