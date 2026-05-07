@@ -284,3 +284,38 @@ BFC 能解决什么问题
 >BFC 是块级格式化上下文，可以理解为一块独立的渲染区域，内外布局互不影响。
 触发方式最常用的是 overflow: hidden，另外 display: flex、position: absolute 也会触发。
 主要用来解决三个问题：一是子元素浮动导致父元素高度塌陷，给父元素触发 BFC 就能包住浮动子元素；二是父子元素 margin 合并问题，触发 BFC 可以隔离 margin；三是实现两栏布局，右侧触发 BFC 就不会被左侧浮动元素覆盖。
+
+#### 8. 移动端如何实现0.5px的border?
+📚 核心知识点
+为什么移动端 0.5px 有问题?
+- 移动端屏幕有 DPR（设备像素比），比如 DPR = 2 表示 1个CSS像素 = 2个物理像素
+- 直接写 border: 0.5px 部分安卓机不支持，会渲染成 1px 或直接消失
+
+解决方案:
+
+1. 伪元素 + transform scale（最常用）
+```css
+.border {
+  position: relative;
+}
+.border::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: 1px;
+  background: #ccc;
+  transform: scaleY(0.5); /* 缩小一半 */
+  transform-origin: top;
+}
+```
+
+2. viewport 缩放
+```js
+<!-- DPR=2 时，整体缩放0.5，1px就变成0.5px -->
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+```
+缺点：整个页面都缩放，影响其他元素。
+
+> 移动端直接写 0.5px 部分安卓机不支持，原因是屏幕 DPR 导致 CSS 像素和物理像素不是 1:1 的关系。
+最常用的方案是用伪元素加 transform: scaleY(0.5)，画一个 1px 的线再缩小一半，兼容性最好。
