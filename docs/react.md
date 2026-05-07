@@ -383,6 +383,17 @@ const handleClick = useCallback(() => doSth(), [])
 Context 的话，高频更新的数据不要放 Context，要拆分、稳定 value 引用，复杂场景直接换 Zustand 。
 其他还可以进行防抖或节流来控制频繁出发的事件，用图片懒加载来优化
 
+##### 1. React.memo与usememo与useCallback的区别
+|          | React.memo     | useMemo      | useCallback  |
+| -------- | -------------- | ------------ | ------------ |
+| 包裹对象 | 组件           | 计算逻辑     | 函数         |
+| 返回值   | 新组件         | 计算结果     | 缓存的函数   |
+| 解决问题 | 避免组件重渲染 | 避免重复计算 | 稳定函数引用 |
+
+`useCallback` 本质是 `useMemo` 的语法糖
+
+- **三者配合使用才有意义**
+
 
 #### 7. React组件
 ##### 1. 函数组件与类组件的区别
