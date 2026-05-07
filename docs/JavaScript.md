@@ -1884,3 +1884,47 @@ Object.prototype.toString.call(undefined);   // "[object Undefined]"
 >第三，把真实渲染的节点用 transform: translateY(offset) 定位到正确位置。用 transform 而不是 top 是因为 transform 走 GPU 合成层，不触发重排。
 >
 >可使用 `react-window` 或 `@tanstack/react-virtual` 这样的成熟库
+
+#### ES6 新特性
+📚 核心知识点
+1. let / const
+- let：块级作用域，无变量提升
+- const：常量，不可重新赋值
+
+2. 箭头函数
+
+- 更简洁，没有自己的 this
+
+3. 解构赋值
+```js
+const { name, age } = user
+const [first, second] = arr
+```
+
+4. 扩展运算符,可选链
+```js
+const arr2 = [...arr1, 4, 5]
+const obj2 = { ...obj1, age: 18 }
+ser?.address?.city   // 可选链，不报错
+```
+5. Promise
+- 解决回调地狱，链式处理异步
+
+6. 模块化 import / export
+
+
+7. Map / Set
+
+
+8. Symbol
+- 唯一值，防止属性命名冲突
+
+9. Class
+```js
+class Person {
+  constructor(name) { this.name = name }
+  say() {}
+}
+```
+
+> ES6 新增了很多特性，常用的有：`let/const` 块级作用域；箭头函数简化写法同时解决 `this` 问题；解构赋值和扩展运算符让对象数组操作更方便；模板字符串替代字符串拼接；`Promise` 解决回调地狱；`Class`语法糖让面向对象写法更清晰；`import/export` 实现模块化；`Map/Set` 新的数据结构，Set 常用来数组去重；还有 `Symbol` 保证值唯一性。
