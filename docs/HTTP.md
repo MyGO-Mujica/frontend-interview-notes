@@ -107,7 +107,19 @@ Cookie: xxx
 ##### 2. tcp为什么需要三次握手 与四次挥手
 ![三次握手示例](https://images.openai.com/static-rsc-4/K6wAmvfPmJk4t6_AXbka8sRHSwZ-1QKE2guONxPXxAdkfs03SU6tCIjtKk1aiVwE0xuFxHlJgtrU9As9qtYiGnvXgdZsC9gQTZjY0uCa-vmehEtnDrRTHlxsskd_pzIRkyRNOpJYUCKA9gCFkCOFDcR7j9Ri3_LLs14rpUoY8Lg?purpose=inline)
 
-
+四次挥手实例
+```js
+客户端                    服务端
+  |                         |
+  |──── FIN ──────────────→ |  第一次：我要断了
+  |                         |
+  |←─── ACK ─────────────── |  第二次：好的我知道了
+  |                         |  （服务端可能还有数据没发完）
+  |←─── FIN ─────────────── |  第三次：我也发完了，我也要断了
+  |                         |
+  |──── ACK ──────────────→ |  第四次：好的，再见
+  |                         |
+```
 
 
 **TCP 需要三次握手，是为了：**
@@ -115,6 +127,10 @@ Cookie: xxx
 1. 确认双方的收发能力正常
 2. 同步双方的初始序列号（ISN）
 3. 避免历史连接（旧报文）干扰新连接
+
+
+**为什么挥手多了一次**
+> 挥手时客户端说要断，服务端可能还有数据没发完，必须先单独回 ACK，等数据发完再单独发 FIN，多了一次。
 
 
 #### 2. 浏览器解析与渲染
