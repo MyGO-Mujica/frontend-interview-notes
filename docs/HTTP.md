@@ -104,7 +104,7 @@ Cookie: xxx
 > 用户输入 URL 后，浏览器会先解析 URL，然后通过 DNS 解析获取服务器 IP，接着通过 TCP（三次握手）建立连接，如果是 HTTPS 还会进行 TLS 握手。连接建立后浏览器发送 HTTP 请求，服务器处理后返回响应。浏览器拿到 HTML 后会解析生成 DOM 树，同时解析 CSS 生成 CSSOM，再合成渲染树，经过布局和绘制最终展示页面。在这个过程中，JS 可能会阻塞解析，同时还涉及缓存、重定向和网络优化等机制。
 
 
-##### 2. tcp为什么需要三次握手
+##### 2. tcp为什么需要三次握手 与四次挥手
 ![三次握手示例](https://images.openai.com/static-rsc-4/K6wAmvfPmJk4t6_AXbka8sRHSwZ-1QKE2guONxPXxAdkfs03SU6tCIjtKk1aiVwE0xuFxHlJgtrU9As9qtYiGnvXgdZsC9gQTZjY0uCa-vmehEtnDrRTHlxsskd_pzIRkyRNOpJYUCKA9gCFkCOFDcR7j9Ri3_LLs14rpUoY8Lg?purpose=inline)
 
 
@@ -177,8 +177,10 @@ CSS  → 解析 CSSOM
 缓存的目标：让浏览器直接用本地存的资源，**跳过网络请求**。
 
 有两大缓存
-- 强缓存
+- 强缓存  
+ HTTP/1.0强缓存用 `Expires`，HTTP/1.1用 `Cache-Control`
 - 协商缓存
+ 协商缓存用 `Last-Modified/If-Modified-Since` 和 `ETag/If-None-Match`
 
 ```
 浏览器发请求
@@ -308,6 +310,27 @@ HTTP/3
 1.1 加入了长连接 keep-alive，连接可以复用，但同一连接的请求还是串行的，有队头阻塞问题。
 2 引入多路复用，一个连接可以并行发多个请求，解决了应用层的队头阻塞；还有 header 压缩和二进制传输。但底层还是 TCP，丢包时 TCP 层的队头阻塞依然存在。
 3 直接换掉了 TCP，用基于 UDP 的 QUIC 协议，彻底解决队头阻塞；连接建立也更快，把 TCP 握手和 TLS 握手合并，大幅减少握手时间；还支持连接迁移，切换网络不会断连。
+
+
+#### 5. https和http的区别，它用了什么机制去保证安全 
+
+📚 核心知识点
+
+**核心区别**
+
+|      | HTTP   | HTTPS             |
+| ---- | ------ | ----------------- |
+| 传输 | 明文   | 加密              |
+| 端口 | 80     | 443               |
+| 安全 | ❌      | ✅                 |
+| 证书 | 不需要 | 需要 SSL/TLS 证书 |
+
+HTTPS 用了哪些机制保证安全?
+
+  1. 第一是**加密**，用非对称加密协商出一个对称密钥，再用这个密钥加密后续通信，非对称加密保证密钥传输安全，对称加密保证通信效率。
+  2. 第二是**身份验证**，服务器向 CA 申请证书，浏览器拿到证书后验证是否由可信机构签发，防止中间人冒充服务器。
+  3. 第三是**完整性校验**，每条消息附带哈希值，接收方收到后重新计算对比，一旦数据被篡改哈希就不一致，立刻能发现。
+
 
 
 
