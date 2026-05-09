@@ -205,6 +205,52 @@ function equal(a, b) {
 
 > `reduce` 本质是“把数组压缩成一个值”，可以用来做累加、计数、去重、扁平化等。
 
+```js
+array.reduce((accumulator, currentValue) => {
+  // accumulator：累积的结果
+  // currentValue：当前遍历的元素
+}, 初始值)
+```
+
+求和
+```js
+const arr = [1, 2, 3, 4]
+
+const sum = arr.reduce((acc, cur) => {
+  return acc + cur
+}, 0)
+
+console.log(sum) // 10
+```
+
+
+去重
+```js
+[1,1,2,2,3].reduce((acc, cur) => {
+  if (!acc.includes(cur)) acc.push(cur)
+  return acc
+}, []) // [1, 2, 3]
+```
+
+计数
+```js
+['a', 'b', 'a', 'c', 'b'].reduce((acc, cur) => {
+  acc[cur] = (acc[cur] || 0) + 1
+  return acc
+}, {})
+```
+
+**扁平化**
+
+```js
+function flatten(arr){
+   return arr.reduce((result, item) =>{
+      return result.concat(Array.isArray(item) ? flatten(item) : item)
+   }, [])
+}
+
+```
+
 ##### **4.Object（对象）**
 
 1️⃣ 静态方法
