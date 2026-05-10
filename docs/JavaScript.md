@@ -1931,8 +1931,12 @@ typeof new Boolean(false)   // 'object' ← 证明它是对象不是原始值
 
 >💡 口诀：new 一下就变成对象，对象转布尔值永远是 true，内容是什么无所谓。
 ```
+##### 3. null 和 undefined 的区别
+- undefined：变量声明了但没有赋值，或函数没有返回值
+- null：主动赋值，表示"这里没有值"，是开发者有意设置的空值
 
-##### 3. 如何区分null 和 undefined
+
+##### 4. 如何区分null 和 undefined
 ① 严格相等（===）—— 最直接
 ```js
 let a = null;
@@ -2014,7 +2018,7 @@ class Person {
 
 > ES6 新增了很多特性，常用的有：`let/const` 块级作用域；箭头函数简化写法同时解决 `this` 问题；解构赋值和扩展运算符让对象数组操作更方便；模板字符串替代字符串拼接；`Promise` 解决回调地狱；`Class`语法糖让面向对象写法更清晰；`import/export` 实现模块化；`Map/Set` 新的数据结构，Set 常用来数组去重；还有 `Symbol` 保证值唯一性。
 
-##### 1. MapSet Array什么区别
+##### 1. Map Set Array什么区别
 **对比表**
 
 |          | Array    | Set        | Map           |
@@ -2026,3 +2030,5 @@ class Person {
 | 常用场景 | 有序数据 | 去重       | 复杂key的映射 |
 
 >三者主要区别是：Array 是有序可重复的列表，通过索引访问，适合存有顺序的数据；Set 是不可重复的集合，会自动去重，最常用来做数组去重；Map 是键值对结构，和普通对象最大的区别是 key 可以是任意类型，对象、数字、函数都可以做 key，而普通对象的 key 只能是字符串或 Symbol。
+
+#####
