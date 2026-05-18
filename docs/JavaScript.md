@@ -336,12 +336,16 @@ Object.defineProperty(obj, 'name', {
 - `Promise.reject()` ❌ 返回一个失败的 Promise
 
 - `Promise.all()` 📦 全部成功才成功（有一个失败就直接失败，常用于并发请求）
+  - 场景：适合多个请求都需要才能渲染的场景
 
 - `Promise.race()` ⏱️ 谁先完成用谁，只看**谁先结束**（谁先 resolve / reject 就返回谁，常用于超时控制 / 抢结果场景）
+  - 最常用来做超时控制
 
 - `Promise.allSettled()` 📊 全部执行完才返回（不管成功失败，返回状态数组）
+  - 场景：适合想拿到所有结果不想被单个失败影响的场景
 
 - `Promise.any()` 🎯 任意一个成功即可（全部失败才报错）
+  - 适合多个备用源取最快响应的场景
 
 ###### 1. Promise.allSettled()
 
