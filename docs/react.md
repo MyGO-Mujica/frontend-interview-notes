@@ -513,6 +513,11 @@ useEffect(() => {
 }, [])
 ```
 
+> React 生命周期分类组件和函数组件两套。
+函数组件用 useEffect 模拟：空依赖数组对应挂载后，有依赖对应更新后，返回 cleanup 函数对应卸载。
+类组件分三个阶段：挂载阶段 componentDidMount DOM 挂载后执行，适合发请求；更新阶段 shouldComponentUpdate 可以返回 false 阻止不必要的渲染，componentDidUpdate 更新后执行；卸载阶段 componentWillUnmount 清除定时器和事件监听。
+现在基本都用函数组件，类组件了解为主。
+
 #### 8. react Fiber
 📚 核心知识点
 React 16 之前，虚拟 DOM Diff 算法是同步递归的，一旦开始就不能中断：
