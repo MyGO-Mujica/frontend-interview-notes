@@ -26,7 +26,7 @@ https://www.example.com:443/path?a=1#hash
 - 端口（443）
 - 路径（/path）
 - 查询参数（a=1）
-- hash（#hash，不参与请求）
+- hash（`#hash`，不参与请求）
 
 同时浏览器还会做：
 
