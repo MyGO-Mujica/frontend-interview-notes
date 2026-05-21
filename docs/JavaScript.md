@@ -351,6 +351,16 @@ Object.defineProperty(obj, 'name', {
 
 > _Object.defineProperty_ 中的选项 enumerable 可定义属性是否可枚举
 
+###### 3. 遍历对象的常用方法
+1. for...in
+- 特点：遍历自身 + 原型链上的所有可枚举属性（不含 Symbol）
+- 注意：面试必提 —— 会遍历原型链，所以实际开发中必须配合 `hasOwnProperty` 过滤继承属性
+
+2. Object.keys() / Object.values() / Object.entries()
+- 特点：只遍历自身的可枚举属性（不含原型链、不含 Symbol），分别返回键数组、值数组、键值对数组
+- 优势：不会遍历原型链，是日常开发最常用的对象遍历方式
+
+
 ##### 5.Promise（异步核心）
 
 1️⃣ 实例方法
@@ -378,6 +388,8 @@ Object.defineProperty(obj, 'name', {
 
 - `Promise.any()` 🎯 任意一个成功即可（全部失败才报错）
   - 适合多个备用源取最快响应的场景
+
+
 
 ###### 1. Promise.allSettled()
 
