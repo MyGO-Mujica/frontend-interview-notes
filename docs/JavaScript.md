@@ -1184,9 +1184,45 @@ return { a: 4 };  // 返回的是一个对象！
 >- 再取一个宏任务执行
 >  然后不断循环。
 
+##### 2. 浏览器的时件循环机制它跟 Node 的事件循环有什么区别？
+Node.js 事件循环
+Node 基于 libuv，事件循环分成明确的6个阶段，按顺序走：
+
+```
+timers → pending callbacks → idle/prepare → poll → check → close callbacks
+          ↑____________________________________________________|
+```
+
+| 阶段            | 做什么                             |
+| --------------- | ---------------------------------- |
+| timers          | 执行 setTimeout / setInterval 回调 |
+| poll            | 等待并处理 I/O 事件（核心阶段）    |
+| check           | 执行 **setImmediate**              |
+| close callbacks | 关闭事件，如 socket.close          |
+
+**Node 特有的微任务（优先级高于宏任务阶段切换）：**
+
+- `process.nextTick`：**优先级最高**，在当前阶段结束后、进入下一阶段前立即执行，`Promise.then`，在 nextTick 之后执行
 
 
-##### 2. 以下输出顺序多少?（事件循环的应用）
+
+#### 核心区别对比
+
+|                | 浏览器                   | Node.js                            |
+| -------------- | ------------------------ | ---------------------------------- |
+| 结构           | 简单：宏任务 + 微任务    | 复杂：6个阶段                      |
+| 微任务时机     | 每个宏任务后清空         | 每个**阶段切换前**清空             |
+| 特有API        | `MutationObserver`       | `process.nextTick`、`setImmediate` |
+| `setImmediate` | 不支持                   | check 阶段执行                     |
+| 渲染           | 微任务清空后可能触发渲染 | 无渲染概念                         |
+
+
+
+> Node 的事件循环要复杂一些，它基于 libuv，分成了六个阶段，比如 timers 阶段处理定时器，poll 阶段处理 I/O，check 阶段处理 setImmediate。每个阶段之间切换的时候才会去清空微任务队列。另外 Node 还有一个 `process.nextTick`，它的优先级比 Promise.then 还高，会在当前阶段结束后第一个执行。
+>
+> 所以最大的区别就是：浏览器是每个宏任务后清微任务，Node 是每个阶段切换前清微任务，而且 Node 多了 nextTick 和 setImmediate 这两个特有的 API。
+
+##### 3. 以下输出顺序多少?（事件循环的应用）
 
 ###### 1.
 ```javascript
