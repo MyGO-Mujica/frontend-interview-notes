@@ -65,7 +65,7 @@ function getMostFrequentTag() {
 
 **核心概念**
 
-跨域是由于浏览器的***\*同源策略\****（Same-Origin Policy）导致的安全限制。当协议（protocol）、域名（domain）或端口（port）任一不同时，就会产生跨域问题。
+跨域是由于浏览器的**同源策略**（Same-Origin Policy）导致的安全限制。当协议（protocol）、域名（domain）或端口（port）任一不同时，就会产生跨域问题。
 
 1. **方案1：CORS（跨域资源共享）** ⭐ 最常用
 
