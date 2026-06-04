@@ -417,6 +417,12 @@ Promise.allSettled(promises).then(results => {
 
 > Promise.allSettled() 用于并发执行多个异步任务，并在所有任务都结束（无论成功或失败）后返回每个任务的结果状态，不会因为某个失败而中断。 它返回的是一个包含每个 Promise 执行结果的数组，每一项都有 status（fulfilled 或 rejected）以及对应的 value 或 reason，适合需要拿到全部结果的场景，比如批量请求。
 
+###### 2. Promise 它支持中断吗？可以有一些方式是可以让它中断的
+> Promise 本身是不支持中断的，一旦执行就会走完，所谓中断本质上都是让后续的 then 不执行。
+除了 AbortController，还有几种方式。一种是用 Promise.race，传入一个永远 pending 的 Promise，让它和原来的 Promise 竞争，这样原来的结果就被"盖掉"了，后续 then 不会触发，但原始任务其实还在跑，有内存泄漏的风险。
+另一种是手动封装一个可以 reject 的控制器，调用 cancel 的时候主动 reject，让流程走到 catch 里，相当于中断了正常流程。
+还有最简单的就是外部标志位，在 then 里判断一个变量，如果已取消就直接 return，不往下走。
+
 #### 4. js 中什么是可选链操作符，如何访问数组
 
 **可选链运算符（?.）**
