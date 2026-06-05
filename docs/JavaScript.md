@@ -125,11 +125,11 @@ const arr = new Array(100); arr.fill(0)
 
 ###### 2. 为何 0.1+0.2 不等于 0.3，应如何做相等比较
 0.1，0.2 表示为二进制会有精度的损失，比较时可引入一个很小的数值 `Number.EPSILON` 容忍误差，其值为 2^-52。
+
 ```javascript
 function equal(a, b) {
   return Math.abs(a - b) < Number.EPSILON;
 }
-
 ```
 
 

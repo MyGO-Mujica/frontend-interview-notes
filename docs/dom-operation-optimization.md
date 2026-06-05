@@ -100,29 +100,13 @@ function getMostFrequentTag() {
 
 
 #### 1. JSONP 的原理是什么，如何实现
+知识点梳理
+为什么 script 能绕过同源策略?
+**浏览器对标签加载资源不做同源限制**
+-  同源策略限制的是 JS 发起的请求（xhr/fetch），不限制标签的 src/href
 
-`JSONP`，全称 `JSON with Padding`，为了解决跨域的问题而出现。虽然它只能处理 GET 跨域，虽然现在基本上都使用 CORS 跨域，但仍然要知道它，毕竟**面试会问**。
-
-`JSONP` 基于两个原理:
-
-1. 动态创建 `script`，使用 `script.src` 加载请求跨过跨域
-2. `script.src` 加载的脚本内容为 JSONP: 即 `PADDING(JSON)` 格式
-
-```java
-$ curl https://shanyue.tech/api/user?id=100&callback=padding
- 
-padding({
-  "id": 100,
-  "name": "shanyue",
-  "wechat": "xxxxx",
-  "phone": "183xxxxxxxx"
-})
-```
-
-对于正常的请求有何不同一目了然: **多了一个 callback=padding, 并且响应数据被 padding 包围**，这就是 JSONP
-
-**那请求数据后，如何处理数据呢？此时的 padding 就是处理数据的函数**。我们只需要在前端实现定义好 padding 函数即可
-
+JSONP 原理
+利用 `<script src>` 可以跨域加载的特性，让服务端返回一段 JS 代码而不是 JSON
 
 
 **推荐回答**
@@ -134,7 +118,14 @@ padding({
 >
 >它只支持 GET 请求，存在安全风险，现在一般使用 CORS 替代。
 
+#### 2. Cors的话，具体前端是怎么知道允许特定域访问呢，配置access-control-allow-origion，这一段前面浏览器是怎么知道允许跨域的呢?
+完整流程
 
+前端发起跨域请求 → 浏览器自动在请求头带上 Origin → 服务端响应头带上 Access-Control-Allow-Origin → 浏览器对比，决定放不放行
+
+>  浏览器判断跨域允不允许的核心流程是这样的：发起跨域请求时，浏览器会自动在请求头里加上 Origin 字段，标明这个请求是从哪个源发出来的，这个字段前端控制不了也伪造不了。
+服务端收到请求后，在响应头里返回 Access-Control-Allow-Origin，告诉浏览器哪些源可以访问。
+浏览器拿到响应后，对比 Origin 和 Allow-Origin，匹配上了就把响应给 JS，匹配不上就直接拦截掉，JS 拿不到任何数据。
 
 
 
