@@ -186,7 +186,29 @@ CSS  → 解析 CSSOM
 - CSS class 来批量改样式
 - 是优先用 transform 和 opacity 来做动画。
 
-##### 2.浏览器缓存
+
+##### 2. Script放在html里面会阻塞html渲染吗,放哪里才不会阻塞?
+**会阻塞**
+浏览器解析 HTML 是从上到下的，遇到 `<script>` 标签时：
+```
+解析HTML → 遇到script → 停下来 → 下载JS → 执行JS → 继续解析HTML
+```
+因为 JS 可能操作 DOM（比如 document.write），所以浏览器不敢继续往下解析，必须等 JS 执行完。
+
+现代解决方案：defer 和 async
+```js
+<head>
+  <script defer src="./index.js"></script>
+  <script async src="./index.js"></script>
+</head>
+```
+
+> script 放在 head 里会阻塞 HTML 渲染，因为浏览器从上到下解析 HTML，遇到 script 就得停下来等 JS 下载和执行完，用户会感觉明显白屏。
+传统做法是把 script 放在 body 最底部，这样 DOM 已经解析完了再加载 JS，不影响页面显示。
+现代方案是用 defer 或 async。defer 是并行下载 JS，但等 HTML 完全解析完再执行，而且多个 defer 脚本会按顺序执行，适合依赖 DOM 的脚本。async 也是并行下载，但下载完就立即执行，不保证顺序，适合独立的脚本比如埋点统计。
+一般项目里推荐用 defer，既不阻塞解析，又能保证执行顺序。
+
+##### 3.浏览器缓存
 每次请求
 ```
 用户请求 → DNS 解析 → TCP 连接 → 发送请求 → 服务器处理 → 返回数据 → 渲染
@@ -236,7 +258,7 @@ CSS  → 解析 CSSOM
   服务器返回新资源（200）
 ```
 
-#### 3. 前端有哪些本地存储方式？
+#### 4. 前端有哪些本地存储方式？
 📚 核心知识点
 1. Cookie
 
