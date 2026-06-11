@@ -244,3 +244,9 @@ onUnmounted（卸载后）
 挂载阶段，`setup` 初始化最早执行，用来初始化数据和方法；`onBeforeMount` 挂载前 DOM 还不存在；`onMounted` 挂载后最常用，适合发请求、操作 DOM、初始化图表等第三方库。
 更新阶段，`onBeforeUpdate` 更新前可以拿到旧的 DOM 状态；`onUpdated` 更新后可以拿到新的 DOM，但不能在里面修改数据，会死循环。
 卸载阶段，`onBeforeUnmount` 卸载前 DOM 还在，可以做最后清理；`onUnmounted` 卸载后用来清除定时器、移除事件监听，防止内存泄漏。
+
+#### 10. nextTick 的作用是什么？原理是怎样的？
+**作用**：nextTick 是在 DOM 更新完成后执行回调，确保能拿到更新后的 DOM。
+**为什么需要**：Vue 的响应式更新是**异步**的。当数据变化时，Vue 不会立刻更新 DOM，而是把更新任务放入一个队列，在"下一个事件循环的微任务"中批量执行。所以修改数据后立刻访问 DOM，拿到的还是旧值，必须用 nextTick 等待 DOM 更新完。
+
+**原理**：Vue3 内部维护一个回调队列，nextTick 调用时将回调 push 进去，然后通过 `Promise.resolve().then(flushJobs)` 在微任务中依次执行。如果环境不支持 Promise，则降级为 `MutationObserver` → `setImmediate` → `setTimeout`。
