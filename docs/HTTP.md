@@ -456,8 +456,35 @@ https里对称加密的密钥会在客户端和服务端之间传输吗？
 >JWT 安全性靠几点保证：签名机制防止 内容 被篡改，服务端用密钥验签，改了内容签名对不上直接拒绝；使用 HTTPS 防止传输过程被截获；设置过期时间，泄露了也会自动失效
 存放位置推荐 HttpOnly Cookie，JS 无法读取，能防 XSS 攻击，配合 SameSite 属性也能防 CSRF。放 localStorage 的话容易被 XSS 脚本读走，安全性低一些。
 
+#### 9. Vue Router / React Router 原理及调用的浏览器 API
+Vue Router 和 React Router 的路由原理是一样的，都是两种模式，调用的浏览器 API 也相同
 
-#### 9. 前端性能优化方案
+Hash 模式：
+
+- URL 带 #，如 http://xxx.com/#/home
+- 调用 API：hashchange 事件，监听 window.addEventListene('hashchange',  callback)
+- 原理：# 后面内容变化不会触发页面刷新，浏览器通过 hashchange 事件通知 JS，路由库在回调里匹配路由渲染组件
+
+History 模式：
+- URL 正常，如 http://xxx.com/home
+- 调用 API：
+  - pushState(state, title, url)：添加一条历史记录，修改 URL 但不刷新页面
+  - replaceState(state, title, url)：替换当前历史记录，修改 URL 但不刷新页面
+  - popstate 事件：监听浏览器前进/后退，window.addEventListener('popstate', callback)
+
+原理：pushState/replaceState 修改 URL 但不触发任何事件，所以路由库需要自己封装跳转方法（Vue Router 的 router.push、React Router 的 <Link>），内部调用 pushState 并手动触发路由匹配。浏览器的前进后退会触发 popstate，路由库在回调里匹配路由
+
+关键区别：
+| 维度| Hash 模式|History 模式|
+| ---| ---| ---|		
+|修改 URL|	location.hash = '/home'|	history.pushState(null, '', '/home')
+监听变化	|hashchange 事件	|popstate 事件（前进后退）+ 手动触发（pushState 不触发事件）
+服务端配置	|不需要	|需要配置所有路由回退 index.html
+SEO	|不友好（#后内容不发给服务器）|	友好
+
+> 两个路由库原理一样，都是两种模式。Hash 模式监听浏览器的 hashchange 事件，修改 location.hash 就能切换路由，不需要服务端配置。History 模式用 pushState 和 replaceState 修改 URL 但不刷新页面，浏览器的前进后退通过 popstate 事件监听。但 pushState 本身不触发任何事件，所以路由库要自己封装跳转方法，内部调用 pushState 后手动触发路由匹配。两个库的差异主要是 Vue Router 内置了导航守卫，React Router 没有；React Router 基于 Context 驱动路由状态，Vue Router 自己管理。
+
+#### 10. 前端性能优化方案
 
 1. 加载优化
 做路由懒加载、图片懒加载，通过动态 import 按需引入代码，减小首屏打包体积，加快首屏渲染。
